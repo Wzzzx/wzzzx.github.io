@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="windows, registry, monitor">
+    <meta name="description" content="Jacksing&#39;s Blog">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            注册表监听避免消息丢失 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">注册表监听避免消息丢失</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2024-04-08 13:08:27</span>
+        <span class="mobile">2024-04-08 13:08</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Windows/">Windows</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>对于注册表的变化监听，<code>Windows</code> 通过 <code>RegNotifyChangeKeyValue</code> 函数来实现。这个函数的原型如下所示：</p>
+<span id="more"></span>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">LONG <span class="title">RegNotifyChangeKeyValue</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  HKEY    hKey,</span></span></span><br><span class="line"><span class="params"><span class="function">  BOOL    bWatchSubtree,</span></span></span><br><span class="line"><span class="params"><span class="function">  DWORD   dwNotifyFilter,</span></span></span><br><span class="line"><span class="params"><span class="function">  HANDLE  hEvent,</span></span></span><br><span class="line"><span class="params"><span class="function">  BOOL    fAsynchronous</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在该函数中，由 <code>hEvent</code> 和 <code>fAsynchronous</code> 来控制同步或者异步。如果 <code>fAsynchronous</code> 为 <code>TRUE</code>，那么函数就会立即返回，否则会一直等待注册表的变化。总的来说，这个函数比较简单，但是有一个特点，就是 <strong>只会通知一次</strong>。使用其来完成注册表监听这个事的操作流程一般都是：开始监听 -&gt; 收到通知 -&gt; 处理通知 -&gt; 重新建立监听。</p>
+<p>但是这里就存在一个让笔者感到非常困惑的地方，为什么要设计为只通知一次呢？如果在收到通知后，重新建立监听前，这段时间内发生了变化，理论上是没办法知道的。在笔者看来，这是一个比较大的问题。</p>
+<p>仔细啃了下文档之后，发现微软其实是提供了解决方案的。在这种需要重复监听的场景下，可以重复使用 <code>hKey</code> 参数，无需每次监听都去创建新的。而后利用这个参数，在监听建立的时，如果已经发生了注册表的变更，不论是同步还是异步，都会立即返回结果。这样就可以避免消息丢失的问题。</p>
+<p>这种设计某种程度而言，就是做了一个消息的压缩处理。当注册表被频繁更改的时候，使用这个接口能够确保获取到最终结果，但是中途的变更可能会丢失。这个问题在实际使用中需要注意。</p>
+<p>此外，还有一个地方需要额外注意。一旦 <code>hKey</code> 所对应的项被删了，那么还想重新建立监听的话，就需要<strong>重新创建</strong> <code>hKey</code>。对于注册表项来说，其生命周期在被删除的那一刻就彻底终结了，所有指向这个项的 <code>handle</code> 都会全部失效。此时即便重新建立一个同名的项，那也是别的项了。必须等到重新创建一个新的项，才能重新建立监听。而监听新建项这个时，只能通过其父节点来完成。不存在的项都无法使用 <code>RegOpenKeyEx</code> 来打开并监听。</p>
+<h3 id="实现方案"><a href="#实现方案" class="headerlink" title="实现方案"></a>实现方案</h3><p>开发一个注册表监听的服务，通常的做法是监听到变化之后，再触发回到函数通知给调用者。但是，一旦这个处理逻辑耗时比较长，在一些频繁变更的注册表项上，就会出现消息被压缩的问题。为了尽可能减少这类现象，笔者的实现方案是拆分监听和处理两个事到不同的线程中去。监听线程只负责监听，而处理线程则负责处理。这样可以避免监听线程因为处理消息而阻塞，导致消息丢失的问题。</p>
+<p>但是这个方案还是存在着一个比较麻烦的问题。两个线程之间的操作必然涉及到同步问题，一旦处理线程占用着锁并且操作耗时太久，一样会导致原先的问题。所以在这个地方，我们必须摈弃锁的使用。</p>
+<p>为了实现这个需求，笔者在项目里借用了 Windows 的窗口消息队列。监听线程通过 <code>PostMessage</code> 函数将消息和变化的项发送到处理线程的消息队列中，而处理线程则通过常规的操作方式取出这一消息，再针对性地进行处理即可。这样就避免了锁的使用，也避免了消息丢失的问题。这样的方式下，能最大限度避免消息压缩，确保每个变更事件都能通知到调用方。</p>
+<blockquote>
+<p>参考链接：</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regnotifychangekeyvalue" >RegNotifyChangeKeyValue function<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://devblogs.microsoft.com/oldnewthing/20200507-00/?p=103733" >Why does Reg­Notify­Change­Key­Value stop notifying once the key is deleted<i class="fas fa-external-link-alt"></i></a></p>
+</blockquote>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：注册表监听避免消息丢失</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2024-04-08 13:08:27</li>
+        <li>
+            本文链接：https://wzzzx.github.io/Windows/handle_registry_monitor_message_lose/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/Windows/system_screen_operation/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">系统息屏亮屏相关操作</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/C/the-safe-bool-idiom/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">对象如何正确地转化为布尔值</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">实现方案</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

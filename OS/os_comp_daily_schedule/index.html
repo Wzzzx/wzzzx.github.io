@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="System">
+    <meta name="description" content="用于记录 os comp 的学习过程">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            os-comp-记录 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">os-comp-记录</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2022-10-20 00:50:16</span>
+        <span class="mobile">2022-10-20 00:50</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/OS/">OS</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>这一博文用于记录每日所学</p>
+<span id="more"></span>
+
+<h3 id="2022-10-20"><a href="#2022-10-20" class="headerlink" title="2022/10/20"></a>2022/10/20</h3><p>以 <a class="link"   target="_blank" rel="noopener" href="https://course.rs/about-book.html" >Rust 语言圣经<i class="fas fa-external-link-alt"></i></a> 作为学习材料来学习 Rust 语言。目前进度看到<a class="link"   target="_blank" rel="noopener" href="https://course.rs/basic/compound-type/string-slice.html" >字符串与切片<i class="fas fa-external-link-alt"></i></a>。不得不说，Rust 还是有点难度的。</p>
+<p>今日感悟：</p>
+<ol>
+<li>表达式与语句。这东西确实是 C++ 所不在意的，目前还是以 C++ 的理解来认识这一表达式，但是语句没想到啥很好的理解方式。暂且忽略</li>
+<li>学习所有权的时候，突然能理解到 C++ 的移动语义具体是在说什么了。所以这里目前也不是什么难点</li>
+<li>借用和解引用让人感觉特别繁琐且麻烦</li>
+</ol>
+<h3 id="2022-10-21"><a href="#2022-10-21" class="headerlink" title="2022/10/21"></a>2022/10/21</h3><p>今日进度：<a class="link"   target="_blank" rel="noopener" href="https://course.rs/basic/compound-type/tuple.html" >元组<i class="fas fa-external-link-alt"></i></a> -&gt; <a class="link"   target="_blank" rel="noopener" href="https://course.rs/basic/flow-control.html" >流程控制<i class="fas fa-external-link-alt"></i></a></p>
+<ol>
+<li>复合类型有点麻烦！</li>
+<li>枚举的特性在 rust 里是一个挺不错的存在，能够包罗万千，我很喜欢这种东西</li>
+<li>结构体内部变量的所有权也能够转移出去，感觉这个特性很可怕，还是得悠着点用。其他的地方倒和 C++ 没啥太大区别</li>
+<li>流程控制这里，for 循环可能导致的所有权转移需要额外注意下，不过用久了估计就是习惯性加上引用</li>
+</ol>
+<h3 id="2022-11-02"><a href="#2022-11-02" class="headerlink" title="2022/11/02"></a>2022/11/02</h3><p>今日感悟：本来打算暂时放弃学习了，想着以现在工作的语言为主，先好好学学 C++ 的模板，不过突然仔细想了想，也不见得我就真乖乖去学丫，还是捡起来吧。这回以测试为主，边测试边啃，快速过完 rust 的基本概念，之后学习用到了再来啃。</p>
+<ol>
+<li>学到了个 as 关键词，看起来是用来转换类型的</li>
+<li>原来序列可以划分为两类，… 和 …=，这是之前忽视的地方</li>
+<li>单元类型占用空内存，这倒跟 C++中空类不一样，这样怎么知道这个单元类型的具体位置呢？</li>
+<li>rust 的字符原来采用的是 Unicode 编码，这个和 C++ 的 char 类型不一样，C++ 的 char 类型是 ASCII 编码，这个需要注意下，之前一直以为是 utf-8。</li>
+<li>表达式和语句究竟是怎样的一个区别到现在都还没搞懂，暂时也只能记住 += 这东西不是表达式</li>
+</ol>
+<h3 id="2022-11-05"><a href="#2022-11-05" class="headerlink" title="2022/11/05"></a>2022/11/05</h3><p>今日感悟：太忙了太忙了，工作后要学习下真的好难抽出时间。</p>
+<ol>
+<li>单个字符采用 Unicode 编码，占用四个字节，但是字符串却是采用 UTF-8 编码。这个地方确实有点诡异</li>
+<li>借用和所有权那里倒感觉还好，这套机制挺不错的，但是学习起来难度并不大，所有权最为简单的理解就是 <code>std::unique_ptr</code></li>
+<li>枚举看来看去，感觉就是一个带名字的元组，同时提供了一个父类的概念出来</li>
+<li>始终 <code>if let</code> 语句有点难以理解，从 <a class="link"   target="_blank" rel="noopener" href="https://stackoverflow.com/questions/65684540/how-to-read-if-let-expressions" >StackOverflow<i class="fas fa-external-link-alt"></i></a> 上找到一个回答，虽然也没有很好的解释，但是从评论找到了 <a class="link"   target="_blank" rel="noopener" href="https://doc.rust-lang.org/book/ch18-02-refutability.html" >Refutability: Whether a Pattern Might Fail to Match<i class="fas fa-external-link-alt"></i></a> 这个章节，倒是解决了一点关于模式匹配的困惑。<code>let</code> 的要求是不可驳模式匹配，所以 <code>if let PATTERN = SOME_VALUE &#123;&#125;</code> 这里可以这么理解，如果 pattern 能够匹配到 SOME_VALUE，那么执行后续的表达式。这样即便 PATTERN 会是 <code>Some(x)</code> 需要赋值的东西，也可以通过匹配来理解。</li>
+<li>大抵是 C++ 写多了，对于诸如 <strong>匹配守卫</strong>，**@绑定** 这类语法糖，唯一的感觉就是好繁琐</li>
+</ol>
+<p>番外：<br>我们可以写出这样的代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> o: <span class="built_in">Option</span>&lt;<span class="built_in">i32</span>&gt; = <span class="literal">Some</span>(<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(x) = <span class="literal">Some</span>(o) &#123;</span><br><span class="line">    o</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>编译的时候一定会报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">= note: expected unit type `()`</span><br><span class="line">                found enum `Option&lt;i32&gt;`</span><br><span class="line">= note: `if` expressions without `else` evaluate to `()`</span><br><span class="line">= help: consider adding an `else` block that evaluates to the expected type</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>根据 <a class="link"   target="_blank" rel="noopener" href="https://doc.rust-lang.org/book/ch18-02-refutability.html" >Refutability: Whether a Pattern Might Fail to Match<i class="fas fa-external-link-alt"></i></a> 所了解到的，一个简单的解释角度就是，<code>let</code> 这东西所接受的值是 irrefutable 的，如果 o 是 None 的话，将不会产生任何的匹配，<code>let</code> 就接受不到任何的东西。在 <a class="link"   target="_blank" rel="noopener" href="https://stackoverflow.com/questions/43335193/why-does-an-if-without-an-else-always-result-in-as-the-value" >StackOverflow<i class="fas fa-external-link-alt"></i></a> 也有一个回答，但是不知道他想表达什么。</p>
+<h3 id="2022-11-06"><a href="#2022-11-06" class="headerlink" title="2022/11/06"></a>2022/11/06</h3><ol>
+<li>在刷泛型的题目的时候，发现第一题所声明的结构体就看不懂，仔细翻了翻回去，才发现还有元组结构体这么个玩意儿</li>
+<li>模板，泛型这东西，确实有点难，很不好理解。关掉 GitHub Copilot 后按着示例一点点写一遍代码，感觉还是有点繁琐，但是清晰了很多</li>
+</ol>
+<h3 id="2022-11-12"><a href="#2022-11-12" class="headerlink" title="2022/11/12"></a>2022/11/12</h3><ol>
+<li>几天没看书了，确实忙啊</li>
+<li>特征这东西确实不简单，不过暂时也只是了解了而已。不理解为什么不整个继承，却要使用特征对象这样的东西</li>
+</ol>
+<h3 id="2022-11-13"><a href="#2022-11-13" class="headerlink" title="2022/11/13"></a>2022/11/13</h3><p>今日感悟：基础部分这就算是学完了，接下来该刷题目了</p>
+<ol>
+<li>类型转换也是个麻烦事，不过一时半会暂时可以不管</li>
+<li>后续的基础内容看起来还好，没啥特别要紧的。</li>
+</ol>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：os-comp-记录</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2022-10-20 00:50:16</li>
+        <li>
+            本文链接：https://wzzzx.github.io/OS/os_comp_daily_schedule/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/C/the-safe-bool-idiom/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">对象如何正确地转化为布尔值</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/english/how-to-learn-english/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">如何学好英语</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2022-10-20"><span class="nav-number">1.</span> <span class="nav-text">2022&#x2F;10&#x2F;20</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2022-10-21"><span class="nav-number">2.</span> <span class="nav-text">2022&#x2F;10&#x2F;21</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2022-11-02"><span class="nav-number">3.</span> <span class="nav-text">2022&#x2F;11&#x2F;02</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2022-11-05"><span class="nav-number">4.</span> <span class="nav-text">2022&#x2F;11&#x2F;05</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2022-11-06"><span class="nav-number">5.</span> <span class="nav-text">2022&#x2F;11&#x2F;06</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2022-11-12"><span class="nav-number">6.</span> <span class="nav-text">2022&#x2F;11&#x2F;12</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2022-11-13"><span class="nav-number">7.</span> <span class="nav-text">2022&#x2F;11&#x2F;13</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

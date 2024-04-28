@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="System, Windows，物理内存，翻译">
+    <meta name="description" content="Jacksing&#39;s Blog">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            「翻译」Windows 的极限：物理内存 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">「翻译」Windows 的极限：物理内存</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2022-02-14 22:10:38</span>
+        <span class="mobile">2022-02-14 22:10</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/OS/">OS</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <blockquote>
+<p>翻译来源 <a class="link"   target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/t5/windows-blog-archive/pushing-the-limits-of-windows-physical-memory/ba-p/723674" >Pushing the Limits of Windows: Physical Memory<i class="fas fa-external-link-alt"></i></a></p>
+</blockquote>
+<h2 id="Physical-Memory（物理内存）"><a href="#Physical-Memory（物理内存）" class="headerlink" title="Physical Memory（物理内存）"></a>Physical Memory（物理内存）</h2><p>One of the most fundamental resources on a computer is physical memory. Windows’ memory manager is responsible with populating memory with the code and data of active processes, device drivers, and the operating system itself. Because most systems access more code and data than can fit in physical memory as they run, physical memory is in essence a window into the code and data used over time. The amount of memory can therefore affect performance, because when data or code a process or the operating system needs is not present, the memory manager must bring it in from disk.</p>
+<p>物理内存是计算机最为基础的资源之一。Windows 的内存管理器会给活跃进程，硬件驱动和操作系统自身的代码和数据分配相应的内存空间。因为大多数系统会访问比物理内存大得多的代码和数据，所以物理内存实际上更像是一个窗口。当进程或操作系统所需的数据或代码无法访问时，内存管理器就会从硬盘进行加载，所以物理内存的大小会对性能产生影响。</p>
+<p>Besides affecting performance, the amount of physical memory impacts other resource limits. For example, the amount of non-paged pool, operating system buffers backed by physical memory, is obviously constrained by physical memory. Physical memory also contributes to the system virtual memory limit, which is the sum of roughly the size of physical memory plus the maximum configured size of any paging files. Physical memory also can indirectly limit the maximum number of processes, which I’ll talk about in a future post on process and thread limits.</p>
+<p>除了影响性能，物理内存的大小也会限制其他资源。例如，由物理内存大小所支持的操作系统缓冲池，非分页缓冲池 (<a class="link"   target="_blank" rel="noopener" href="https://developer.aliyun.com/article/464466" >non-paged pool<i class="fas fa-external-link-alt"></i></a>) 的大小。物理内存同样对虚拟内存的大小有影响，虚拟内存的大小大体上由物理内存大小加上 <a class="link"   target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/client-management/introduction-page-file" >paging files<i class="fas fa-external-link-alt"></i></a> 可配置的最大大小。物理内存还会间接地影响到最大进程数，这个会将后面谈到进程和线程数量极限的文章中提到。</p>
+<h2 id="Windows-Server-Memory-Limits（Windows-Server-内存限制）"><a href="#Windows-Server-Memory-Limits（Windows-Server-内存限制）" class="headerlink" title="Windows Server Memory Limits（Windows Server 内存限制）"></a>Windows Server Memory Limits（Windows Server 内存限制）</h2><p>Windows support for physical memory is dictated by hardware limitations, licensing, operating system data structures, and driver compatibility. The Memory Limits for Windows Releases page in MSDN documents the limits for different Windows versions, and within a version, by SKU.</p>
+<p>Windows 对内存的限制主要取决于硬件限制，许可证，操作系统数据结构和驱动兼容性。MSDN 中的 Windows 版本<a class="link"   target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/memory/memory-limits-for-windows-releases?redirectedfrom=MSDN" >内存限制页面<i class="fas fa-external-link-alt"></i></a>记录了不同 Windows 版本的限制，以及在一个版本中，按 SKU 的限制。</p>
+<p>You can see physical memory support licensing differentiation across the server SKUs for all versions of Windows. For example, the 32-bit version of Windows Server 2008 Standard supports only 4GB, while the 32-bit Windows Server 2008 Datacenter supports 64GB. Likewise, the 64-bit Windows Server 2008 Standard supports 32GB and the 64-bit Windows Server 2008 Datacenter can handle a whopping 2TB. There aren’t many 2TB systems out there, but the Windows Server Performance Team knows of a couple, including one they had in their lab at one point. Here’s a screenshot of Task Manager running on that system:</p>
+<p>你可以看到在不同 Windows 版本的 SKU 上有着不同的物理内存支持许可。例如，32 位的 Windows Server 2008 Standard 只支持 4 GB，而 Windows Server 2008 Datacenter 能够支持 64 GB。与此同时，64 位的 Windows Server 2008 Standard 支持 32 GB，而 64 位的 Windows Server 2008 Datacenter 能够支持 2 TB。外界没有很多 2 TB 大小的系统，但是 Windows Server Performance Team 知道一些，其中一台就在它们的实验室里。下图是那个系统的任务管理器截图：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121037i8A1A9892115C2119.5yfsh7f3w5c0.webp"
+                      alt="121037i8A1A9892115C2119"
+                ></p>
+<p>The maximum 32-bit limit of 128GB, supported by Windows Server 2003 Datacenter Edition, comes from the fact that structures the Memory Manager uses to track physical memory would consume too much of the system’s virtual address space on larger systems. The Memory Manager keeps track of each page of memory in an array called the PFN database and, for performance, it maps the entire PFN database into virtual memory. Because it represents each page of memory with a 28-byte data structure, the PFN database on a 128GB system requires about 980MB. 32-bit Windows has a 4GB virtual address space defined by hardware that it splits by default between the currently executing user-mode process (e.g. Notepad) and the system. 980MB therefore consumes almost half the available 2GB of system virtual address space, leaving only 1GB for mapping the kernel, device drivers, system cache and other system data structures, making that a reasonable cut off:</p>
+<p>Windows Server 2003 Datacenter 32 位版本最大 128 GB 物理内存的限制，是因为内存管理器用来管理内存的数据结构在大内存的系统上会占用过多的虚拟内存空间。内存管理器在一个被称为 <a class="link"   target="_blank" rel="noopener" href="https://rayanfam.com/topics/inside-windows-page-frame-number-part1/" >PFN<i class="fas fa-external-link-alt"></i></a> 数据库的数组中追踪内存中所有的页，并且整个 PFN 数据库会被映射于虚拟内存中用于提升性能。因为它用一个 28 字节的数据结构来标记每一页，所以在 128 GB 的系统上会占用 980 MB 的空间。32 位 Windows 由硬件决定的 4 GB 虚拟内存空间会被默认划分为正在运行的用户态程序（例如记事本）和操作系统。2 GB 的系统虚拟地址空间被 980 MB 消耗了接近一半，仅留了 1 GB 的空间用于映射内核，设备驱动器，系统缓存和其他系统数据结构，所以理所当然做了限制。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121038i10B7969ABC196455.2xj5g4oev9u0.webp"
+                      alt="121038i10B7969ABC196455"
+                ></p>
+<p>That’s also why the memory limits table lists lower limits for the same SKU’s when booted with 4GB tuning (called 4GT and enabled with the Boot.ini’s /3GB or /USERVA, and Bcdedit’s /Set IncreaseUserVa boot options), because 4GT moves the split to give 3GB to user mode and leave only 1GB for the system. For improved performance, Windows Server 2008 reserves more for system address space by lowering its maximum 32-bit physical memory support to 64GB.</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/memory/4-gigabyte-tuning" >4GT<i class="fas fa-external-link-alt"></i></a> 会分配 3 GB 空间给用户态，只留下 1 GB 给操作系统，这就是为什么内存限制表会对相同 SKU 但是以 4GB tuning（被称为 4GT，通过 Boot.ini 的 /3GB 和 /USERVA 命令和 Bcdedit’s /Set IncreaseUserVa boot 选项开启）启动的系统列出更低的限制。</p>
+<p>The Memory Manager could accommodate more memory by mapping pieces of the PFN database into the system address as needed, but that would add complexity and possibly reduce performance with the added overhead of map and unmap operations. It’s only recently that systems have become large enough for that to be considered, but because the system address space is not a constraint for mapping the entire PFN database on 64-bit Windows, support for more memory is left to 64-bit Windows.</p>
+<p>内存管理器可以通过映射部分 PFN 数据库 到系统地址空间的方式来容纳更多的内存，但是这些额外的映射和取消映射的开销会增加系统复杂度和降低性能。直到现在系统变得足够得大才开始去考虑这些问题，但是因为在 64 位 Windows 上映射整个 PFN 数据库并不会限制系统地址空间，对更大内存的支持就留给了 64 位 Windows。</p>
+<p>The maximum 2TB limit of 64-bit Windows Server 2008 Datacenter doesn’t come from any implementation or hardware limitation, but Microsoft will only support configurations they can test. As of the release of Windows Server 2008, the largest system available anywhere was 2TB and so Windows caps its use of physical memory there.</p>
+<p>64 位 Windows Server 2008 Datacenter 最大支持 2 TB 的限制并不是因为任何实现或硬件限制，仅仅是因为 Microsoft 只会支持它们所能测试的配置。截止到 Windows Server 2008 的发行，世界上最大的系统内存是 2 TB，所以 Windows 在物理内存上是有限制的。</p>
+<h2 id="Windows-Client-Memory-Limits（Windows-用户版内存限制）"><a href="#Windows-Client-Memory-Limits（Windows-用户版内存限制）" class="headerlink" title="Windows Client Memory Limits（Windows 用户版内存限制）"></a>Windows Client Memory Limits（Windows 用户版内存限制）</h2><p>64-bit Windows client SKUs support different amounts of memory as a SKU-differentiating feature, with the low end being 512MB for Windows XP Starter to 128GB for Vista Ultimate and 192GB for Windows 7 Ultimate. All 32-bit Windows client SKUs, however, including Windows Vista, Windows XP and Windows 2000 Professional, support a maximum of 4GB of physical memory. 4GB is the highest physical address accessible with the standard x86 memory management mode. Originally, there was no need to even consider support for more than 4GB on clients because that amount of memory was rare, even on servers.</p>
+<p>从低端的 512 MB 的 Windows XP 的内存到 Vista Ultimate 的 128 GB 的内存再到 Windows 7 Ultimate 的 192 GB，64 位的 Windows 用户版以不同的数量的内存支持作为 SKU 的特性区分。然而，所有的 32 位 Windows 用户版 SKU，包括 Windows Vista, Windows XP 和 Windows 2000 Professional 都只支持最大 4 GB 的物理内存。标准 x86 内存管理器模式最大只能支持 4 GB 的物理地址寻址空间。最开始的时候，在用户版并不需要额外考虑支持超过 4 GB 的内存，因为这么大内存的机器即便是在服务端都很罕见。</p>
+<p>However, by the time Windows XP SP2 was under development, client systems with more than 4GB were foreseeable, so the Windows team started broadly testing Windows XP on systems with more than 4GB of memory. Windows XP SP2 also enabled Physical Address Extensions (PAE) support by default on hardware that implements no-execute memory because its required for Data Execution Prevention (DEP), but that also enables support for more than 4GB of memory.</p>
+<p>然而，当时正在进行着 Windows XP SP2 的开发，可以预见客户端的系统内存将会超过 4 GB，所以 Windows 团队开始在内存超过 4GB 的系统上广泛测试 Windows XP。因为数据执行保护 (<a class="link"   target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/memory/data-execution-prevention" >DEP<i class="fas fa-external-link-alt"></i></a>) 的原因，Windows XP SP2 默认支持在实现了 <a class="link"   target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Executable_space_protection" >no-execute memory<i class="fas fa-external-link-alt"></i></a> 的硬件上开启物理地址扩展 (<a class="link"   target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/memory/physical-address-extension" >PAE<i class="fas fa-external-link-alt"></i></a>) 支持，这也让其能够支持超过 4 GB 大小的内存。</p>
+<p>What they found was that many of the systems would crash, hang, or become unbootable because some device drivers, commonly those for video and audio devices that are found typically on clients but not servers, were not programmed to expect physical addresses larger than 4GB. As a result, the drivers truncated such addresses, resulting in memory corruptions and corruption side effects. Server systems commonly have more generic devices and with simpler and more stable drivers, and therefore hadn’t generally surfaced these problems. The problematic client driver ecosystem led to the decision for client SKUs to ignore physical memory that resides above 4GB, even though they can theoretically address it.</p>
+<p>他们发现许多系统会因为一些硬件驱动而崩溃，挂起或无法启动，这通常是一些客户端上特有的，但服务端不会有的音视频驱动，这些驱动编写时并没有考虑物理内存超过 4 GB 的情况。因此，程序截断了这些地址，导致了一些内存损坏和副作用。服务端系统一半会有更通用的驱动，这些驱动更为简单和健壮，因此一般不会面对这个问题。这些有问题的客户端驱动生态导致客户端 SKUs 即便理论上能够访问超过 4 GB 的物理内存地址，也决定去忽略它，只使用 4 GB 以内的地址空间。</p>
+<h2 id="32-bit-Client-Effective-Memory-Limits（32-位客户端有效内存的限制）"><a href="#32-bit-Client-Effective-Memory-Limits（32-位客户端有效内存的限制）" class="headerlink" title="32-bit Client Effective Memory Limits（32 位客户端有效内存的限制）"></a>32-bit Client Effective Memory Limits（32 位客户端有效内存的限制）</h2><p>While 4GB is the licensed limit for 32-bit client SKUs, the effective limit is actually lower and dependent on the system’s chipset and connected devices. The reason is that the physical address map includes not only RAM, but device memory as well, and x86 and x64 systems map all device memory below the 4GB address boundary to remain compatible with 32-bit operating systems that don’t know how to handle addresses larger than 4GB. If a system has 4GB RAM and devices, like video, audio and network adapters, that implement windows into their device memory that sum to 500MB, 500MB of the 4GB of RAM will reside above the 4GB address boundary, as seen below:</p>
+<p>即便许可证限制了 32 位客户端 SKUs 只能访问 4 GB，但有效内存的限制其实会更低，它取决于系统芯片和所连接的设备。原因是物理内存不只映射 RAM 地址，x86 和 x64 系统为了兼容 32 位的操作系统不知道如何处理超过 4 GB 的地址空间的问题，将所有的硬件地址都映射到了 4 GB 以内的地址空间中。如果一个系统有 4 GB 的 RAM，硬件内存大小为 500 MB 的硬件设备，例如音视频设备和网络驱动器，那么在这 4 GB 的 RAM 中，有 500 MB 会被它们所占用，所下图所示：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121039i7E8269B9271C660F.3e6llup17920.webp"
+                      alt="121039i7E8269B9271C660F"
+                ></p>
+<p>The result is that, if you have a system with 3GB or more of memory and you are running a 32-bit Windows client, you may not be getting the benefit of all of the RAM.  On Windows 2000, Windows XP and Windows Vista RTM, you can see how much RAM Windows has accessible to it in the System Properties dialog, Task Manager’s Performance page, and, on Windows XP and Windows Vista (including SP1), in the Msinfo32 and Winver utilities. On Window Vista SP1, some of these locations changed to show installed RAM, rather than available RAM, as documented in this Knowledge Base article.</p>
+<p>这样会导致你无法在一个装有 3 GB 或更大内存的 32 位 Windows 客户端上享受所有内存的好处。在 Windows 2000, Windows XP 和 Windows Vista RTM 上，你可以在系统属性弹窗，任务管理器的性能页查看到 Windows 能够访问到多少内存，在<br>Windows XP 和 Windows Vista（包括 SP1）还可以使用 Msinfo32 和 Winver 工具。正如这篇<a class="link"   target="_blank" rel="noopener" href="https://support.microsoft.com/zh-cn/topic/windows-vista-sp1-%E5%8C%85%E6%8B%AC%E6%8A%A5%E5%91%8A%E7%9A%84%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98-ram-646be31d-1a07-bed9-4929-e1ab2ca468e9" >文档<i class="fas fa-external-link-alt"></i></a>所说，在 Window Vista SP1 上，一些地方不显示可用 RAM，改为显示已安装的 RAM。</p>
+<p>On my 4GB laptop, when booted with 32-bit Vista, the amount of physical memory available is 3.5GB, as seen in the Msinfo32 utility:</p>
+<p>我 4 GB 的笔记上一旦使用 32 位的 Vista，Msinfo32 所显示的可用物理内存就会是 3.5 GB：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121040i7A1417E484652CAA.1jl026z22pfk.webp"
+                      alt="121040i7A1417E484652CAA"
+                ></p>
+<p>You can see physical memory layout with the Meminfo tool by Alex Ionescu (who’s contributing to the 5th Edition of the Windows Internals that I’m coauthoring with David Solomon ). Here’s the output of Meminfo when I run it on that system with the -r switch to dump physical memory ranges:</p>
+<p>你可以通过 <a class="link"   target="_blank" rel="noopener" href="http://www.alex-ionescu.com/" >Alex Ionescu<i class="fas fa-external-link-alt"></i></a> 的 <a class="link"   target="_blank" rel="noopener" href="http://www.winsiderss.com/tools/meminfo/meminfo.htm" >Meminfo<i class="fas fa-external-link-alt"></i></a> 工具查看物理内存结构，（他正在为我和 <a class="link"   target="_blank" rel="noopener" href="https://www.hugedomains.com/domain_profile.cfm?d=solsem.com" >David Solomon<i class="fas fa-external-link-alt"></i></a> 共同编写的第五版 Windows 内部资料提供帮助）。下图是我在系统上使用 -r 这个命令去打印物理内存排列时，Meminfo 的输出：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121041i4AA3C3702DCF35A4.5ml8ti9vs6s0.webp"
+                      alt="121041i4AA3C3702DCF35A4"
+                ></p>
+<p>Note the gap in the memory address range from page 9F0000 to page 100000, and another gap from DFE6D000 to FFFFFFFF (4GB). However, when I boot that system with 64-bit Vista, all 4GB show up as available and you can see how Windows uses the remaining 500MB of RAM that are above the 4GB boundary:</p>
+<p>可以注意到内存地址排布在 9F0000 到 100000 和 DFE6D000 到 FFFFFFFF(4 GB) 都有一个空缺。然而当我改用 64 位的 Vista 时，所有的 4 GB 都显示为可用，你可以看到 Windows 在 4 GB 的内存边界内是怎么使用这保留的 500 MB 空间的：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121042i40E3EAD02D59A9AF.2xkmm9uglww0.webp"
+                      alt="121042i40E3EAD02D59A9AF"
+                ></p>
+<p>What’s occupying the holes below 4GB? The Device Manager can answer that question. To check, launch “devmgmt.msc”, select Resources by Connection in the View Menu, and expand the Memory node. On my laptop, the primary consumer of mapped device memory is, unsurprisingly, the video card, which consumes 256MB in the range E0000000-EFFFFFFF:</p>
+<p>那么是什么占据了 4 GB 内的内存空间呢？设备管理器可以回答这个问题。通过运行 “devmgmt.msc”，在菜单选择通过连接列出资源，然后站靠内存节点即可。不出意外的，在我的笔记本上，这些映射的硬件内存中消耗最大的是显卡，它的地址范围是 E0000000-EFFFFFFF，占据了 256 MB 的空间。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121043i50E52B9758F5B8B3.49fy13va57o0.webp"
+                      alt="121043i50E52B9758F5B8B3"
+                ></p>
+<p>Other miscellaneous devices account for most of the rest, and the PCI bus reserves additional ranges for devices as part of the conservative estimation the firmware uses during boot.</p>
+<p>其他各式的设备则占据了剩余的空间，PCI 总线还为设备额外保留了一部分空间，固件启动期间会使用到这些保守估计的空间。</p>
+<p>The consumption of memory addresses below 4GB can be drastic on high-end gaming systems with large video cards. For example, I purchased one from a boutique gaming rig company that came with 4GB of RAM and two 1GB video cards. I hadn’t specified the OS version and assumed that they’d put 64-bit Vista on it, but it came with the 32-bit version and as a result only 2.2GB of the memory was accessible by Windows. You can see a giant memory hole from 8FEF0000 to FFFFFFFF in this Meminfo output from the system after I installed 64-bit Windows:</p>
+<p>4 GB 内的地址会用在高端游戏系统上会被剧烈消耗掉。例如，我在一个精品游戏电脑组装公司购买了一个 4 GB 的 RAM 和两个 1 GB 的显卡。我以为它们会安装一个 64 位的 Vista，所以没有去指定系统版本，但它们给了一个 32 位的系统，这导致 Windows 只能读取到 2.2 GB 的地址。在我安装了 64 位的 Windows 后，你可以在 Meminfo 的输出中看到一个从 8FEF0000 到 FFFFFFFF 的内存漏洞：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121044i698749E2C1A1F3D2.3ncnge41rp00.webp"
+                      alt="121044i698749E2C1A1F3D2"
+                ></p>
+<p>Device Manager reveals that 512MB of the over 2GB hole is for the video cards (256MB each), and it looks like the firmware has reserved more for either dynamic mappings or because it was conservative in its estimate:</p>
+<p>从设备管理器可以看出，这个 2 GB 的内存漏洞中，有 512 MB 是保留给显卡的（每张 256 MB），看起来固件会为动态映射保留更多的空间，或者是因为它的分配预测比较保守：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121045i26EFB039D1FD4324.5ogzkqn3jbs0.webp"
+                      alt="121045i26EFB039D1FD4324"
+                ></p>
+<p>Even systems with as little as 2GB can be prevented from having all their memory usable under 32-bit Windows because of chipsets that aggressively reserve memory regions for devices. Our shared family computer, which we purchased only a few months ago from a major OEM, reports that only 1.97GB of the 2GB installed is available:</p>
+<p>即使系统只有 2 GB 的内存也会被阻止在 32 位的 Windows 下去使用所有的内存，因为芯片积极地为硬件保留内存区域。我们一个月前从一个主要的 OEM 厂商那购买的家庭共享电脑报告了这 2 GB 的内存只有 1.97 GB 是可用的。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121046iA45FC4F0A8121F2F.ct0vyv2l2co.webp"
+                      alt="121046iA45FC4F0A8121F2F"
+                ></p>
+<p>The physical address range from 7E700000 to FFFFFFFF is reserved by the PCI bus and devices, which leaves a theoretical maximum of 7E700000 bytes (1.976GB) of physical address space, but even some of that is reserved for device memory, which explains why Windows reports 1.97GB.</p>
+<p>物理地址范围 7E700000 到 FFFFFFFF 会被 PCI 总线和硬件所持有，理论上最多留下 7E700000 字节 (1.976 GB) 的物理地址空间，但其中的一些甚至会被硬件内存所保留，这就解释了为什么 Windows 只报告了 1.97 GB 的大小。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121047iD4B5FA50BB9AD4CE.3w7kr2p0t2w0.webp"
+                      alt="121047iD4B5FA50BB9AD4CE"
+                ></p>
+<p>Because device vendors now have to submit both 32-bit and 64-bit drivers to Microsoft’s Windows Hardware Quality Laboratories (WHQL) to obtain a driver signing certificate, the majority of device drivers today can probably handle physical addresses above the 4GB line. However, 32-bit Windows will continue to ignore memory above it because there is still some difficult to measure risk, and OEMs are (or at least should be) moving to 64-bit Windows where it’s not an issue.</p>
+<p>因为硬件厂商现在需要提交 32 位和 64 位的驱动到微软的 Windows Hardware Quality Laboratories (WHQL) 来获取驱动签名认证，所以现在主要的硬件驱动都能够处理超过 4 GB 的物理地址。然而因为一些难以衡量的风险，32 位的 Windows 还是会继续忽略超过 4 GB 的内存，OEMs 正在转移到 64 位的 Windows 上，在哪里就不会是个问题。</p>
+<p>The bottom line is that you can fully utilize your system’s memory (up the SKU’s limit) with 64-bit Windows, regardless of the amount, and if you are purchasing a high end gaming system you should definitely ask the OEM to put 64-bit Windows on it at the factory.</p>
+<p>不管物理内存的总数是多少，底线就是你能够在 64 位的 Windows 上充分使用你的系统内存（达到 SKU 的限制）。如果你购买一台高端的游戏系统，你应该明确要求 OEM 在制造厂里就给它安装一个 64 位的 Windows。</p>
+<h2 id="Do-You-Have-Enough-Memory-（你有足够的内存吗？）"><a href="#Do-You-Have-Enough-Memory-（你有足够的内存吗？）" class="headerlink" title="Do You Have Enough Memory?（你有足够的内存吗？）"></a>Do You Have Enough Memory?（你有足够的内存吗？）</h2><p>Regardless of how much memory your system has, the question is, is it enough? Unfortunately, there’s no hard and fast rule that allows you to know with certainty. There is a general guideline you can use that’s based on monitoring the system’s “available” memory over time, especially when you’re running memory-intensive workloads. Windows defines available memory as physical memory that’s not assigned to a process, the kernel, or device drivers. As its name implies, available memory is available for assignment to a process or the system if required. The Memory Manager of course tries to make the most of that memory by using it as a file cache (the standby list), as well as for zeroed memory (the zero page list), and Vista’s Superfetch feature prefetches data and code into the standby list and prioritizes it to favor data and code likely to be used in the near future.</p>
+<p>不管你的系统有多大的内存，问题是，它真的足够吗？不幸的是，并没有任何准确快速的规则让你明确判断。不过你可以使用一个比较通用的方法，你需要长时间监视系统<strong>可用内存</strong>的大小，特别是你打开一些内存集中型的工作时。Windows 上<strong>可用内存</strong>的定义是没有分配给进程，系统和硬件驱动的物理内存。正如其名，可用内存在进程或系统需要的时候能够分配出去。当然，内存管理器会尽可能地通过将其作为文件缓存 (<a class="link"   target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows-server/administration/performance-tuning/subsystem/cache-memory-management/" >the standby list<i class="fas fa-external-link-alt"></i></a>) 或者 <a class="link"   target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Zero_page" >zeroed memory<i class="fas fa-external-link-alt"></i></a> (the zero page list) 来充分利用这些内存。Vista 的 Superfetch 特性还会提前将数据和指令放置到 standby list 中，优先考虑使用那些不久的将来就会被使用的数据和指令。</p>
+<p>If available memory becomes scarce, that means that processes or the system are actively using physical memory, and if it remains close to zero over extended periods of time, you can probably benefit by adding more memory. There are a number of ways to track available memory. On Windows Vista, you can indirectly track available memory by watching the Physical Memory Usage History in Task Manager, looking for it to remain close to 100% over time. Here’s a screenshot of Task Manager on my 8GB desktop system (hmm, I think I might have too much memory!):</p>
+<p>如果可用内存不足的话，意味着进程和系统非常活跃地使用物理内存。如果在过去一段时间都接近于 0 ，那么你很可能可以从增加内存获取到收益。有好几种方法去追踪可用内存。在 Windows Vista 上，你可以在任务管理器的物理内存使用记录中，通过寻找它过去接近 100% 的那段时间来间接地追踪到可用内存的变化。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121048i87B78C52C2AA4D6E.23g58wcra8u8.webp"
+                      alt="121048i87B78C52C2AA4D6E"
+                ></p>
+<p>On all versions of Windows you can graph available memory using the Performance Monitor by adding the Available Bytes counter in the Memory performance counter group:</p>
+<p>在所有版本的 Windows 上，只需要将可用字节总数添加到内存性能计数组。就可以通过 Performance Monitor 来绘制可用内存曲线。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/Pushing-the-Limits-of-Windows-Physical-Memory/121049iA3715C835EBE4A7C.4mjhma5f4ne0.webp"
+                      alt="121049iA3715C835EBE4A7C"
+                ></p>
+<p>You can see the instantaneous value in Process Explorer’s System Information dialog, or, on versions of Windows prior to Vista, on Task Manager’s Performance page.</p>
+<p>你可以在进程管理器的系统信息页看到瞬间数值。而在 Vista 之前版本的 Windows 上，可以在任务管理器的性能页上看到。</p>
+<h2 id="Pushing-the-Limits-of-Windows（触碰-Windows-的极限）"><a href="#Pushing-the-Limits-of-Windows（触碰-Windows-的极限）" class="headerlink" title="Pushing the Limits of Windows（触碰 Windows 的极限）"></a>Pushing the Limits of Windows（触碰 Windows 的极限）</h2><p>Out of CPU, memory and disk, memory is typically the most important for overall system performance. The more, the better. 64-bit Windows is the way to go to be sure that you’re taking advantage of all of it, and 64-bit Windows can have other performance benefits that I’ll talk about in a future Pushing the Limits blog post when I talk about virtual memory limits.</p>
+<p>在 CPU、内存和磁盘中，内存通常对整个系统性能最为重要。内存越多越好，使用 64 位的 Windows 是保证你能够利用到所有物理内存的方法。64 位的 Windows 也能够获得其他的性能收益，我会在之后博文虚拟内存限制中谈到这点。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：「翻译」Windows 的极限：物理内存</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2022-02-14 22:10:38</li>
+        <li>
+            本文链接：https://wzzzx.github.io/OS/Pushing-the-Limits-of-Windows-Physical-Memory/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/encoding/chinese-encoding-history/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">中文编码变化史</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/6-S081/lab2-system-call/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">实验2：系统调用</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Physical-Memory%EF%BC%88%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Physical Memory（物理内存）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-Server-Memory-Limits%EF%BC%88Windows-Server-%E5%86%85%E5%AD%98%E9%99%90%E5%88%B6%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">Windows Server Memory Limits（Windows Server 内存限制）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-Client-Memory-Limits%EF%BC%88Windows-%E7%94%A8%E6%88%B7%E7%89%88%E5%86%85%E5%AD%98%E9%99%90%E5%88%B6%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Windows Client Memory Limits（Windows 用户版内存限制）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#32-bit-Client-Effective-Memory-Limits%EF%BC%8832-%E4%BD%8D%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%89%E6%95%88%E5%86%85%E5%AD%98%E7%9A%84%E9%99%90%E5%88%B6%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">32-bit Client Effective Memory Limits（32 位客户端有效内存的限制）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Do-You-Have-Enough-Memory-%EF%BC%88%E4%BD%A0%E6%9C%89%E8%B6%B3%E5%A4%9F%E7%9A%84%E5%86%85%E5%AD%98%E5%90%97%EF%BC%9F%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">Do You Have Enough Memory?（你有足够的内存吗？）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pushing-the-Limits-of-Windows%EF%BC%88%E8%A7%A6%E7%A2%B0-Windows-%E7%9A%84%E6%9E%81%E9%99%90%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">Pushing the Limits of Windows（触碰 Windows 的极限）</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

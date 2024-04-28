@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Bool, Object, Idiom">
+    <meta name="description" content="对象如何正确地转化为布尔值">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            对象如何正确地转化为布尔值 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">对象如何正确地转化为布尔值</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2022-12-08 23:20:56</span>
+        <span class="mobile">2022-12-08 23:20</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/C/">C++</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>将对象转化为布尔值是一个非常常规的需求，在诸如 <code>if (expr) &#123;&#125;</code> 或 <code>while (expr) &#123;&#125;</code> 这样的语句中，都会要求对象能够隐式转化为布尔值。C++ 也提供了一系列的方式用于对象的隐式或显式类型转换。但是诸如转化为 int，都是一些比较简单的操作，唯独 bool 比较特殊。在 C++ 中，有太多的类型可以跟 bool 类型相互转换，比如 int, 指针，对象等等。这也带来了一个问题，哪种转换方式才是最好的，所带来的副作用的是最小的。这个问题也叫做安全布尔问题（Safe bool）。</p>
+<span id="more"></span>
+
+<h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><p>讨论这一切之前，先简单了解一下 C++ 的隐式转换工作规则。针对于隐式转换，C++ 定义了一套隐式转换序列：</p>
+<ul>
+<li>零个或一个标准转换序列</li>
+<li>零个或一个用户自定义转换序列</li>
+<li>零个或者一个标准转换序列</li>
+</ul>
+<p>标准转化序列顾名思义，就是内置的一些隐式转换规则，比如 int 转为 bool，数组类型转化为指针。而用户自定义转换序列就是用户自己所定义的一系列隐式转换规则，对于第二标准转换序列，只有在实施了用户自定义转换序列之后才能运用。在官方文档中并没有给两个标准转换序列命名，所以分别按其使用的节点来称呼。</p>
+<p>每次进行隐式转换的时候，编译器会先使用第一标准转换序列进行转换。如果无法正确进行转换，就会使用用户自定义转换序列进行转换，如果此时能够正确转换的话，就会使用第二标准转换序列进行最后的收尾工作。不过，如果是转换构造函数的话，就不会触发第二标准转换序列了。</p>
+<p>举个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">int</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">A a;</span><br><span class="line"><span class="keyword">bool</span> b = a;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，第一标准转换序列把 <code>A*</code> 转换为 <code>const A*</code>，用户自定义转换序列把 <code>const A*</code> 转换为 <code>int</code>，最后再经由第二转换序列，把 <code>int</code> 转换为 <code>bool</code>。</p>
+<p>弄清楚隐式转换的规则后，对后续所涉及到的隐式转换会有更好的理解。更为具体的例子，可以参考《<a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/apocelipes/p/14415033.html" >彻底理解 c++ 的隐式类型转换<i class="fas fa-external-link-alt"></i></a>》</p>
+<h2 id="安全布尔问题"><a href="#安全布尔问题" class="headerlink" title="安全布尔问题"></a>安全布尔问题</h2><p>在引入安全布尔问题之前，得先回答一个问题，自定义类型为什么需要布尔值转换。一个最为常见的场景就是，我们需要去判断资源是否存在。在传统的 C 语言的做法中，都是采用指针来引用资源。所以在任意一个地方，我们只需要去判断指针是否为空，即可判断资源是否存在。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (some_resource *p = get_resource()) &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 C++ 中，我们会把资源放置于对象内部，使用包括 RAII 的方法来管理资源，对于资源是否可用的判断就会复杂一些。针对于这一问题，一个最为简单的方案提供一个方法，通过该方法来判断内部资源是否可用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ResourcePtr ptr = <span class="built_in">get_resource</span>();</span><br><span class="line"><span class="keyword">if</span> (ptr.<span class="built_in">is_valid</span>()) &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这一方法最大的问题在于，不可能会存在一个约定俗成的命名用于确定资源是否可用，除了 <code>is_valid</code> 之外，还可以是 <code>isValid, Valid, is_empty, empty</code> 等等，调用者需要去记住这些方法名，才能正确的使用。这样的话，就会增加调用者的负担，而且还会增加代码的复杂度。此外，在<strong>模板编程</strong>的时候，这一方法会带来更为严峻的问题，它没法通用于所有的类型。</p>
+<p>所以最为完美的方案就是，对象能够顺利的转换为布尔类型，调用者可以直接使用对象来进行资源的判断。这就带来我们所提及的安全布尔问题，所幸这一问题在 C++11 之后在语言层面上得到了完美的解决，但是可以了解一下，过去是如何解决这一问题的。</p>
+<h3 id="使用-operator-bool"><a href="#使用-operator-bool" class="headerlink" title="使用 operator bool"></a>使用 <code>operator bool</code></h3><p>C++ 提供自定义类型转换的方法，所以最显而易见的方案就是利用 <code>operator bool</code> 来实现对象的布尔转换。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Testable</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Testable</span>(<span class="keyword">bool</span> b = <span class="literal">true</span>) : <span class="built_in">ok_</span>(b) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">bool</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ok_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">bool</span> ok_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在实现好 <code>operator bool</code> 之后，我们就可以直接使用对象来进行判断了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Testable t;</span><br><span class="line"><span class="keyword">if</span> (t) &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从某种程度上来说，作为语言本身所提供的方案，这本应该是完美无缺的。但是，这一方案也存在着一些问题。在上一节提到的隐式转换规则中说到，在调用了用户自定义类型转换之后，还会有一个标准转换序列用于进行一些收尾转换工作。正是因为这一规则，会带来几个可能违背我们想法的问题。</p>
+<p>其一就是，布尔值可以很轻易的转换为 int 类型，所以就可能会写出下面这样的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntPtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">IntPtr</span>(<span class="keyword">int</span>* p = <span class="literal">nullptr</span>) : <span class="built_in">ptr_</span>(p) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">bool</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ptr_ != <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">operator</span> <span class="keyword">int</span>* () <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> ptr_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span>* ptr_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="function">IntPtr <span class="title">ptr</span><span class="params">(&amp;a)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (ptr) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = ptr; <span class="comment">// 此处会出问题</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们原本是想在判断了 <code>ptr</code> 是否为空之后，再通过 <code>*</code> 操作符获取到其中的值。但是由于忽略了 <code>*</code> 操作符，导致这段代码虽然可以通过编译，但是 <code>val</code> 的值只会是 0 和 1。显然这是不符合预期的。而且问题也很隐晦，很难发现。这里便是第二转换序列进行了一些收尾工作，将 <code>bool</code> 类型转换为 <code>int</code> 类型。</p>
+<p>其次就是，像文件句柄或网络连接这样的资源之间是不可以互相比较的。但是由于定义了 <code>operator bool</code>，使得这些资源在语言层面上能够进行比较，这显然也是不合理的。比如下面这样的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntPtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">IntPtr</span>(<span class="keyword">int</span>* p = <span class="literal">nullptr</span>) : <span class="built_in">ptr_</span>(p) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">bool</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ptr_ != <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span>* ptr_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    IntPtr ptr1, ptr2;</span><br><span class="line">    <span class="keyword">if</span> (ptr1 == ptr2) &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ptr1</code> 和 <code>ptr2</code> 作为一个指向 <code>int</code> 值的对象，它们之间的比较是没有任何意义的。但编译器并不会报错，而且继续跑下来，直到运行时才会出现问题。</p>
+<h3 id="使用-operator"><a href="#使用-operator" class="headerlink" title="使用 operator!"></a>使用 <code>operator!</code></h3><p>要在实现布尔值转换的基础上，解决上述两个问题，<code>operator!</code> 应该是一个比较不错的解决方案。具体可以看下面的代码实现：</p>
+<p>对于布尔值而言，置否是一个很常见的操作。所以也可以利用其来实现布尔值的转换。这个方案可以规避</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntPtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">IntPtr</span>(<span class="keyword">int</span>* p = <span class="literal">nullptr</span>) : <span class="built_in">ptr_</span>(p) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span>!() &#123;</span><br><span class="line">        <span class="keyword">return</span> !ptr_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span>* ptr_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    IntPtr ptr1, ptr2;</span><br><span class="line">    <span class="keyword">if</span> (!!ptr1) &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!ptr1 == !ptr2) &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这一方法最大的问题在于不够直观，每次判断时至少都需要使用一个感叹号。而且并没有解决可比较的问题。</p>
+<h3 id="使用-operator-void"><a href="#使用-operator-void" class="headerlink" title="使用 operator void*"></a>使用 <code>operator void*</code></h3><p>在上文提到过，C 语言使用指针来进行资源的可用性判断是一个很不错的方式。所以一个转换思路就是借助于这一现成方案，在各式指针中，<code>void *</code> 指针除了用于进行类型转换，基本就没有其他的操作了，所以可以将对象隐式转换为 <code>void *</code> 指针。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntPtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">IntPtr</span>(<span class="keyword">int</span>* p = <span class="literal">nullptr</span>) : <span class="built_in">ptr_</span>(p) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="keyword">void</span>* <span class="title">const</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (ptr_) <span class="keyword">return</span> ptr_;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span>* ptr_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这个方案看起来是比较完美的，上文所提到的各类问题基本都可以完美的避过。所以标准库中，<code>std::cout</code> 就采用了这一种方案用于隐式转换。但是它同时也暗含着一个比较严重的问题，像下面语句是完全合法的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IntPtr ptr;</span><br><span class="line">detele ptr;</span><br></pre></td></tr></table></figure>
+
+<p>根据墨菲定律，可能出问题的话，就一定会出问题。所以还是需要探讨一个更完美的方案。</p>
+<h3 id="使用内部-class-指针进行转换"><a href="#使用内部-class-指针进行转换" class="headerlink" title="使用内部 class 指针进行转换"></a>使用内部 <code>class</code> 指针进行转换</h3><p>使用内部 <code>class</code> 来进行布尔值的隐式转换也是一个不错的思路，具体的做法如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntPtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">IntPtr</span>(<span class="keyword">int</span>* p = <span class="literal">nullptr</span>) : <span class="built_in">ptr_</span>(p) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">test_class</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">operator</span> <span class="keyword">const</span> test_class* () <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> ptr_ ? <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> test_class*&gt;(<span class="keyword">this</span>) : <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span>* ptr_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在类的内部创建一个不需要实现的内部类，而后提供一个方法，通过该方法进行类型转换。因为类没有实现，所以类型转换的目标是指向该内部类的指针。虽然这一方案能够实现布尔值转换并进行判断，但是这种方案一样存在着不容忽视的问题。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">IntPtr p1, p2;</span><br><span class="line"><span class="keyword">if</span> (p1 == p2) &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (p1 &lt; p2) &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>指向数据的指针是具备比较大小的能力的，这个能力在这一方案下反倒成了一个问题。所以该方案的可用性倒不如上面提到的一些方案。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="explicit-转换函数"><a href="#explicit-转换函数" class="headerlink" title="explicit 转换函数"></a><code>explicit</code> 转换函数</h3><p>从 C++11 开始，这一关键词被引入到转换函数上，用于在语言层面上禁止隐式转换和拷贝初始化。这一关键词的引入，可以在相关<a class="link"   target="_blank" rel="noopener" href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html" >草案<i class="fas fa-external-link-alt"></i></a>上看到比较完整的提议论述。</p>
+<p>对于开发者而言，这个关键词所带来的好处不言而喻，与本文最相关的一点就是，布尔值的隐式转换问题从此有了一个完美的官方标准方案。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntPtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">IntPtr</span>(<span class="keyword">int</span>* p = <span class="literal">nullptr</span>) : <span class="built_in">ptr_</span>(p) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">test_class</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="keyword">operator</span> <span class="title">bool</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ptr_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span>* ptr_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>只需要添加一个关键词，即可将类的布尔值隐式转换牢牢限制在判断语句内。</p>
+<h3 id="旧版本的解决方案"><a href="#旧版本的解决方案" class="headerlink" title="旧版本的解决方案"></a>旧版本的解决方案</h3><p>如果是一个 C++11 之前的代码，如何实现一个比较完美的布尔值隐式转换方式呢？上文提到了四种解决方案，从直接使用语言提供的方案，到利用空指针和指向数据的指针。除了这些之外，还缺乏了一个<strong>指向函数的指针</strong>。</p>
+<p>跟平时所使用的指针不同，指向函数的指针式不一样完全不一样的存在。在 C++ FAQ 中，作者有提及，指向成员函数的指针并不单纯的只是一个指针，其更像是一个特殊的数据结构。而且，在语言的标准中，函数和数据的存放位置并没有做定义，因此，指向函数的指针和指向数据的指针不能够互相转换。（<a class="link"   target="_blank" rel="noopener" href="https://isocpp.org/wiki/faq/pointers-to-members#cant-cvt-memfnptr-to-voidptr" >1<i class="fas fa-external-link-alt"></i></a> <a class="link"   target="_blank" rel="noopener" href="https://isocpp.org/wiki/faq/pointers-to-members#cant-cvt-fnptr-to-voidptr" >2<i class="fas fa-external-link-alt"></i></a>）。也正因如此，针对于指向数据的指针的那些操作，对于指向函数的指针来说，都是不可行的。</p>
+<p>所以，可以利用指向成员函数的指针来完成这个布尔值的隐式转换操作。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Testable</span> &#123;</span></span><br><span class="line">    <span class="keyword">bool</span> ok_;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(Testable::* bool_type)</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">this_type_does_not_support_comparisons</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Testable</span><span class="params">(<span class="keyword">bool</span> b = <span class="literal">true</span>)</span> : ok_(b) &#123;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">bool_type</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ok_ == <span class="literal">true</span> ?</span><br><span class="line">            &amp;Testable::this_type_does_not_support_comparisons : <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们需要定义一个成员函数指针 <code>bool_type</code>，<code>bool_type</code> 的细节并不需要对外暴露，同时，还需要定义一个实现该成员函数指针类型的成员函数 <code>this_type_does_not_support_comparisons</code>。之后就就需要再实现一个类型转换函数，将对象转换为 <code>bool_type</code>。因为 <code>bool_type</code> 是一个指针，所以编译器能够自动对它进行布尔值的转换。</p>
+<p>这一方案基本继承了转换为 <code>void*</code> 的方案，只不过，这里的 <code>void*</code> 被替换为了 <code>bool_type</code>。同时，因为 <code>bool_type</code> 是一个成员函数指针，所以还能规避 <code>void*</code> 会被 <code>delete</code> 的问题。</p>
+<p>不过该方案现在还并非完美，因为隐式转换的目标是一个指针，所以不同的 <code>Testable</code> 对象依旧是可以互相比较的。这个问题其实是一个非常严重的语义问题，所以还是需要再进一步完善。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Testable test;</span><br><span class="line">Testable test2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (test1 == test2) &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (test != test2) &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于这个问题的最优解法就是运算符重载，只需要让使用者在调用了 <code>==</code> 后无法通过编译，就可以一劳永逸的解决这个问题。具体的代码如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">bool</span> <span class="keyword">operator</span>!=(<span class="keyword">const</span> Testable&amp; lhs, <span class="keyword">const</span> T&amp; rhs) &#123;</span><br><span class="line">    lhs.<span class="built_in">this_type_does_not_support_comparisons</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">bool</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> Testable&amp; lhs, <span class="keyword">const</span> T&amp; rhs) &#123;</span><br><span class="line">    lhs.<span class="built_in">this_type_does_not_support_comparisons</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在声明 <code>bool_type</code> 的实现函数时，将其访问权限设置为了 <code>private</code>，这样就无法通过外界进行访问。因此在重载 <code>==</code> 的时候，可以通过调用一个无法访问的函数的方式来阻止编译。</p>
+<p>因此，通过上述的操作，就可以在并不带来副作用的情况下，完美解决 <code>Testable</code> 对象的比较问题。</p>
+<h3 id="旧方案的推广方案"><a href="#旧方案的推广方案" class="headerlink" title="旧方案的推广方案"></a>旧方案的推广方案</h3><p>既然实现方案有了，接下来就是如何将其变为一个库，供各路调用者直接调用。一个简单的实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">safe_bool_base</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">safe_bool_base</span>() &#123;&#125;</span><br><span class="line">    <span class="built_in">safe_bool_base</span>(<span class="keyword">const</span> safe_bool_base&amp;) &#123;&#125;</span><br><span class="line">    safe_bool_base&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> safe_bool_base&amp;) &#123; <span class="keyword">return</span> *<span class="keyword">this</span>; &#125;</span><br><span class="line">    ~<span class="built_in">safe_bool_base</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(safe_bool_base::* bool_type)</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">this_type_does_not_support_comparisons</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="keyword">void</span>&gt; class safe_bool : <span class="keyword">public</span> safe_bool_base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">operator</span> <span class="built_in">bool_type</span>() <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="built_in"><span class="keyword">return</span></span> (<span class="keyword">static_cast</span>&lt;<span class="keyword">const</span> T*&gt;(<span class="keyword">this</span>))-&gt;<span class="built_in">boolean_test</span>()</span><br><span class="line">            ? &amp;safe_bool_base::this_type_does_not_support_comparisons : <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    ~<span class="built_in">safe_bool</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;&gt; <span class="class"><span class="keyword">class</span> <span class="title">safe_bool</span>&lt;</span><span class="keyword">void</span>&gt; : <span class="keyword">public</span> safe_bool_base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">bool_type</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">boolean_test</span>() == <span class="literal">true</span> ?</span><br><span class="line">            &amp;safe_bool_base::this_type_does_not_support_comparisons : <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">boolean_test</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">safe_bool</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</span><br><span class="line"><span class="keyword">void</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> safe_bool&lt;T&gt;&amp; lhs, <span class="keyword">const</span> safe_bool&lt;U&gt;&amp; rhs) &#123;</span><br><span class="line">    lhs.<span class="built_in">this_type_does_not_support_comparisons</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</span><br><span class="line"><span class="keyword">void</span> <span class="keyword">operator</span>!=(<span class="keyword">const</span> safe_bool&lt;T&gt;&amp; lhs, <span class="keyword">const</span> safe_bool&lt;U&gt;&amp; rhs) &#123;</span><br><span class="line">    lhs.<span class="built_in">this_type_does_not_support_comparisons</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Testable_with_virtual</span> :</span> <span class="keyword">public</span> safe_bool&lt;&gt; &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">boolean_test</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Perform Boolean logic here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Testable_without_virtual</span> :</span></span><br><span class="line">    <span class="keyword">public</span> safe_bool &lt;Testable_without_virtual&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">boolean_test</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Perform Boolean logic here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这里比较有意思的是，原文作者提供了两种调用方案。一种是通过继承 <code>safe_bool</code> 类，另一种是通过继承 <code>safe_bool</code> 模板类，这两者的区别就在于虚函数的调用开销。</p>
+<h2 id="汇总"><a href="#汇总" class="headerlink" title="汇总"></a>汇总</h2><p>这个问题有意思的地方在于，它是一个非常简单的问题，但是却有着非常多的解决方案。这些解决方案的优劣性也各不相同，但是都能够解决这个问题。这也是 C++ 的一个特点，它的灵活性非常强，但是也因此导致了很多的问题。这也是为什么 C++ 有很多的编码规范，以及很多的编码规范的原因。原文详见：<a class="link"   target="_blank" rel="noopener" href="http://www.artima.com/cppsource/safebool.html" >Safe Bool Idiom<i class="fas fa-external-link-alt"></i></a>。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：对象如何正确地转化为布尔值</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2022-12-08 23:20:56</li>
+        <li>
+            本文链接：https://wzzzx.github.io/C/the-safe-bool-idiom/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/Windows/handle_registry_monitor_message_lose/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">注册表监听避免消息丢失</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/OS/os_comp_daily_schedule/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">os-comp-记录</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.</span> <span class="nav-text">隐式类型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E5%B8%83%E5%B0%94%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">安全布尔问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-operator-bool"><span class="nav-number">2.1.</span> <span class="nav-text">使用 operator bool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-operator"><span class="nav-number">2.2.</span> <span class="nav-text">使用 operator!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-operator-void"><span class="nav-number">2.3.</span> <span class="nav-text">使用 operator void*</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%86%85%E9%83%A8-class-%E6%8C%87%E9%92%88%E8%BF%9B%E8%A1%8C%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.4.</span> <span class="nav-text">使用内部 class 指针进行转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#explicit-%E8%BD%AC%E6%8D%A2%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">explicit 转换函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A7%E7%89%88%E6%9C%AC%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.2.</span> <span class="nav-text">旧版本的解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A7%E6%96%B9%E6%A1%88%E7%9A%84%E6%8E%A8%E5%B9%BF%E6%96%B9%E6%A1%88"><span class="nav-number">3.3.</span> <span class="nav-text">旧方案的推广方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E6%80%BB"><span class="nav-number">4.</span> <span class="nav-text">汇总</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

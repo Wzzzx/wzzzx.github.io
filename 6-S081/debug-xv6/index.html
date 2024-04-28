@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="MIT, 6.S081, xv6, debug">
+    <meta name="description" content="介绍如何调试运行xv6操作系统">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            调试xv6 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">调试xv6</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2022-01-22 21:22:08</span>
+        <span class="mobile">2022-01-22 21:22</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/6-S081/">6.S081</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>调试是一个比较麻烦的事情，需要倒腾的东西有点多，而且有些问题我现在也没搞清楚</p>
+<span id="more"></span>
+
+<h2 id="调试工具"><a href="#调试工具" class="headerlink" title="调试工具"></a>调试工具</h2><p>现在已知的调试工具有三种，暂时也还没搞清楚它们之间具体有什么区别。</p>
+<h3 id="riscv64-unknown-elf-gdb"><a href="#riscv64-unknown-elf-gdb" class="headerlink" title="riscv64-unknown-elf-gdb"></a><code>riscv64-unknown-elf-gdb</code></h3><p>在<a href="/6-S081/xv6-running/" title="启动">启动</a> <code>xv6</code> 的一文介绍了 <code>SiFive</code> 有提供一套工具链用来启动系统，在这套工具链里可以找到 <code>riscv64-unknown-elf-gdb</code> 用于调试</p>
+<h3 id="gdb-multiarch"><a href="#gdb-multiarch" class="headerlink" title="gdb-multiarch"></a><code>gdb-multiarch</code></h3><p><a class="link"   target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.828/2019/tools.html" >官方工具页<i class="fas fa-external-link-alt"></i></a>所提供的工具是 <code>gdb-multiarch</code>。这个可以通过 <code>apt-get</code> 直接安装。此外，在工具页所提供的 <a class="link"   target="_blank" rel="noopener" href="https://github.com/riscv/riscv-gnu-toolchain" >GitHub<i class="fas fa-external-link-alt"></i></a> 中可以发现，该仓库所提供的包也是 <code>riscv64-unknown-elf-gdb</code></p>
+<h3 id="riscv64-linux-gnu-gdb"><a href="#riscv64-linux-gnu-gdb" class="headerlink" title="riscv64-linux-gnu-gdb"></a><code>riscv64-linux-gnu-gdb</code></h3><p>在<a class="link"   target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=o44d---Dk4o&ab_channel=DavidMorejon" >视频<i class="fas fa-external-link-alt"></i></a>中可以看到，老师所使用的调试工具是 <code>riscv64-linux-gnu-gdb</code>，因为前面的工具已经解决了调试问题，所以没有去找这个包的安装方式</p>
+<h2 id="gdbinit-文件"><a href="#gdbinit-文件" class="headerlink" title=".gdbinit 文件"></a><code>.gdbinit</code> 文件</h2><p>每次开启调试的时候，<code>Makefile</code> 会使用 <code>.gdbinit.tmpl-riscv</code> 生成<code>.gdbinit</code> 文件。从 <code>Makefile</code> 可以看到，会变的地方就是调试端口号。这个文件的用途是用于初始化调试环境，<code>gdb</code> 启动的时候会读取其中的命令并执行。具体可以见<a class="link"   target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man5/gdbinit.5.html" >帮助文档<i class="fas fa-external-link-alt"></i></a></p>
+<h2 id="疑难杂症"><a href="#疑难杂症" class="headerlink" title="疑难杂症"></a>疑难杂症</h2><h3 id="Undefined-item-quot-riscv-rv64-quot"><a href="#Undefined-item-quot-riscv-rv64-quot" class="headerlink" title="Undefined item: &quot;riscv:rv64&quot;"></a><code>Undefined item: &quot;riscv:rv64&quot;</code></h3><p>使用 <code>gdb-multiarch</code> 时会在开头看到这个错误提示，此时通过命令 <code>set architecture</code> 查看当前所支持的所有系统架构，发现并没有 <code>riscv64</code> 的支持，怪不得会有这个错误提示。在 <a class="link"   target="_blank" rel="noopener" href="https://stackoverflow.com/a/60577077" >Stack Overflow<i class="fas fa-external-link-alt"></i></a> 上找到的答案说需要将版本升级到 8.3 以上才可以。但是我的系统是 <code>Ubuntu 18.04</code>，<a class="link"   target="_blank" rel="noopener" href="https://launchpad.net/ubuntu/bionic/amd64/gdb-multiarch" >系统源<i class="fas fa-external-link-alt"></i></a>所支持的最高版本就只有 8.1.1。所以没办法使用这个工具进行调试了。</p>
+<p><del>不知道课程官方为什么推荐这个作为调试工具，可能我哪些地方没有弄对吧</del> Ubuntu 18 的源所带的版本太旧了，所以不支持 riscv 架构。需要把系统升级到 20 以上的版本才可以。</p>
+<h3 id="no-symbol-table-is-loaded-use-the-file-command"><a href="#no-symbol-table-is-loaded-use-the-file-command" class="headerlink" title="no symbol table is loaded. use the file command"></a><code>no symbol table is loaded. use the file command</code></h3><p>出现这个问题是因为符号没有正确的加载，一开始有怀疑是编译的时候没有使用 <code>-g</code> 这个选项，导致没有把符合表打进去。但是查看 <code>Makefile</code> 后发现，其使用了 <code>-ggdb</code> 这个命令，一样能够将符号表打到可执行文件里。要解决这个问题也很简单，只需要在 <code>gdb</code> 的命令行里输入 <code>file kernel/kernel</code> 就可以把内核的符号加载进来</p>
+<h3 id="auto-loading-has-been-declined-by-your-auto-load-safe-path’-set-to-“-debugdir-datadir-auto-load”"><a href="#auto-loading-has-been-declined-by-your-auto-load-safe-path’-set-to-“-debugdir-datadir-auto-load”" class="headerlink" title="auto-loading has been declined by your `auto-load safe-path’ set to “$debugdir:$datadir/auto-load”"></a>auto-loading has been declined by your `auto-load safe-path’ set to “$debugdir:$datadir/auto-load”</h3><p>这个也很奇怪，每次启动的时候都会输出这个警告。后来才意识到，为了出现避免出现一些<a class="link"   target="_blank" rel="noopener" href="https://blog.deniffer.com/post/%E9%9A%8F%E7%AC%94/qemu-gdb-can-not-access-memory/" >安全问题<i class="fas fa-external-link-alt"></i></a>，<code>gdb</code> 不会再主动的执行任何文件。所以需要在用户目录下声明，<code>xv6</code> 这个仓库的 <code>.gdbinit</code> 文件是安全的</p>
+<p>通过 <code>echo add-auto-load-safe-path &#123;PATH&#125;/.gdbinit &gt; ~/.gdbinit</code> 命令，其中 <code>&#123;PATH&#125;</code> 换成自己仓库路径即可</p>
+<p>这个问题顺带影响了第二个问题。如果没有添加为可信任文件，会导致 <code>gdb</code> 不主动加载内核文件，影响符号解析。</p>
+<blockquote>
+<p><strong>参考</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiu0821/p/6244324.html"><code>GDB</code> 配置与 <code>.gdbinit</code> 的编写</a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://sourceware.org/gdb/onlinedocs/gdb/Auto_002dloading-safe-path.html" >Security restriction for auto-loading<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://blog.deniffer.com/post/%E9%9A%8F%E7%AC%94/qemu-gdb-can-not-access-memory/" >GDB调试指南1<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/KatyuMarisaBlog/p/13727565.html" >MIT 6.S081 xv6调试不完全指北<i class="fas fa-external-link-alt"></i></a></p>
+</blockquote>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：调试xv6</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2022-01-22 21:22:08</li>
+        <li>
+            本文链接：https://wzzzx.github.io/6-S081/debug-xv6/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/6-S081/kernel-link-file/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">内核链接脚本解析</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/6-S081/xv6-running/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">运行xv6系统</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="nav-number">1.</span> <span class="nav-text">调试工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#riscv64-unknown-elf-gdb"><span class="nav-number">1.1.</span> <span class="nav-text">riscv64-unknown-elf-gdb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gdb-multiarch"><span class="nav-number">1.2.</span> <span class="nav-text">gdb-multiarch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#riscv64-linux-gnu-gdb"><span class="nav-number">1.3.</span> <span class="nav-text">riscv64-linux-gnu-gdb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gdbinit-%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">.gdbinit 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87"><span class="nav-number">3.</span> <span class="nav-text">疑难杂症</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Undefined-item-quot-riscv-rv64-quot"><span class="nav-number">3.1.</span> <span class="nav-text">Undefined item: &quot;riscv:rv64&quot;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#no-symbol-table-is-loaded-use-the-file-command"><span class="nav-number">3.2.</span> <span class="nav-text">no symbol table is loaded. use the file command</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#auto-loading-has-been-declined-by-your-auto-load-safe-path%E2%80%99-set-to-%E2%80%9C-debugdir-datadir-auto-load%E2%80%9D"><span class="nav-number">3.3.</span> <span class="nav-text">auto-loading has been declined by your &#96;auto-load safe-path’ set to “$debugdir:$datadir&#x2F;auto-load”</span></a></li></ol></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

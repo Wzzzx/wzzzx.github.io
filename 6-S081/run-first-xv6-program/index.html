@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="MIT, 6.S081, xv6, debug">
+    <meta name="description" content="搭配GDB了解清楚从启动到运行第一个程序的过程">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            调试运行第一个Xv6程序 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">调试运行第一个Xv6程序</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2022-02-01 23:10:20</span>
+        <span class="mobile">2022-02-01 23:10</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/6-S081/">6.S081</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>Xv6 刚启动的时候处于 <strong>Machine Mode</strong>，完成基本配置工作后就会尽快跳转到 <strong>Supervisor Mode</strong>，在这个模式下，<code>main</code> 会尽快完成系统的配置工作并创建出第一个用户程序。</p>
+<span id="more"></span>
+
+<h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><p>Xv6 是一个支持多进程的操作系统，在 Makefile 中可以看到 <code>CPUS</code> 会被默认设置为 3，为了调试方便，在启动的时候，可以将其设置为 1。这样就只会在一个 CPU 上运行程序，单个断点就可以阻止整个操作系统的运行。</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>系统可以采用 Ubuntu Server 20.04，调试用的 GDB 是 gdb-multiarch 9.2.0，qemu 则采用 SiFive 所提供的 qemu-system-riscv64 5.1.0。</p>
+<h2 id="开始运行"><a href="#开始运行" class="headerlink" title="开始运行"></a>开始运行</h2><p>按<a href="/6-S081/debug-xv6/" title="调试xv6">调试xv6</a> 一文来操作的话，开发调试环境是可以顺利跑起来的。此时在一个终端执行 <code>make CPUS=1 qemu-gdb</code> 将系统跑起来，然后在另一个终端执行 <code>gdb-multiarch</code> 将 gdb 运行起来，此时 gdb 会自动连接到 qemu 的调试环境内，一切顺利的话，可以看到下面这样的输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2</span><br><span class="line">Copyright (C) 2020 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line">Type &quot;show copying&quot; and &quot;show warranty&quot; for details.</span><br><span class="line">This GDB was configured as &quot;x86_64-linux-gnu&quot;.</span><br><span class="line">Type &quot;show configuration&quot; for configuration details.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;http://www.gnu.org/software/gdb/bugs/&gt;.</span><br><span class="line">Find the GDB manual and other documentation resources online at:</span><br><span class="line">    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span><br><span class="line"></span><br><span class="line">For help, type &quot;help&quot;.</span><br><span class="line">Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;.</span><br><span class="line">The target architecture is assumed to be riscv:rv64</span><br><span class="line">warning: No executable has been specified and target does not support</span><br><span class="line">determining executable automatically.  Try using the &quot;file&quot; command.</span><br><span class="line">0x0000000000001000 in ?? ()</span><br></pre></td></tr></table></figure>
+<h3 id="起步操作"><a href="#起步操作" class="headerlink" title="起步操作"></a>起步操作</h3><p>开始的时候，可以通过 <code>b _entry</code> 在系统入口处设置一个断点，在<a href="/6-S081/kernel-link-file/" title="链接控制脚本">链接控制脚本</a>中提到过，系统的入口点会被设置为 <code>0x80000000</code>。但是不知道什么原因，在我的机器上，这个断点的地址会被设置为 <code>0x80000004</code>，而在老师课上所展示的却是 <code>0x8000000a</code>。但是这时候如果通过 <code>info address _entry</code> 查看 <code>_entry</code> 的地址，又可以看到其位于 <code>0x80000000</code> 上。具体是什么原因还需要进行后续的探究。</p>
+<p>断点设置好了之后，可以输入 <code>c</code> 让系统跑起来，这时候会直接卡在断点处。为了方便调试，这时候可以使用 <code>layout split</code> 将 gdb 窗口划分为指令和代码两个窗口，方便查看每个代码所对应的指令。</p>
+<p>这时候系统处于 <strong>Machine Mode</strong>，此时会配置好环境，创建好程序栈，以便转入 <strong>Supervisor Mode</strong> 运行 C 代码。这些代码暂时可以不必理会。</p>
+<h3 id="进入-main-函数"><a href="#进入-main-函数" class="headerlink" title="进入 main 函数"></a>进入 <code>main</code> 函数</h3><p>越过 <strong>Machine Mode</strong> 相关的代码后，就可以直接来到内核起始处，这里跟普通的 C 程序一样，都是以 <code>main</code> 作为入口函数。通过命令 <code>b main</code> 将断点设置在 <code>main</code> 函数处。然后直接输入 <code>c</code> 让程序跑起来，直到 <code>main</code> 函数再停下来。</p>
+<p>在 <code>main</code> 函数内会完成系统的各种配置，包括设置好虚拟内存，页表，文件系统等等，具体可以参看<a class="link"   target="_blank" rel="noopener" href="https://github.com/mit-pdos/xv6-riscv/blob/f2ab0eb644a60f946f35fcb5578fba53720edfa7/kernel/main.c" >代码<i class="fas fa-external-link-alt"></i></a>中的注释。老师在课上有提到，这些初始化的操作是有顺序的，不能随意调换。</p>
+<p>在这些初始化的函数中，现在需要关注的是 <code>userinit()</code>。在这个函数内，会完成第一个 <code>User Mode</code> 程序的创建。</p>
+<h3 id="进入-userinit-函数"><a href="#进入-userinit-函数" class="headerlink" title="进入 userinit() 函数"></a>进入 <code>userinit()</code> 函数</h3><p>在 <code>main</code> 函数内使用 <code>n</code> 命令让程序逐行执行，直到 <code>userinit()</code> 的时候，改用 <code>s</code> 让程序进入函数体内。</p>
+<p>这个函数的操作就是手动创建了一个用户进程，将这个进程设置为 <code>RUNNABLE</code> 状态，以便 cpu 进行调度执行。这里有个有意思的地方，<code>userinit()</code> 创建用户进程的方式，是直接使用程序的二进制形式来创建。</p>
+<p>这个用户程序的二进制代码定义直接硬编码在 <code>initcode</code> 这个数组里，相应的可执行程序是 <code>user/initcode</code>。</p>
+<h3 id="initcode-程序"><a href="#initcode-程序" class="headerlink" title="initcode 程序"></a><code>initcode</code> 程序</h3><p><code>initcode</code> 的定义在 <a class="link"   target="_blank" rel="noopener" href="https://github.com/mit-pdos/xv6-riscv/blob/f2ab0eb644a60f946f35fcb5578fba53720edfa7/user/initcode.S" >user/initcode.S<i class="fas fa-external-link-alt"></i></a>。这个程序就是 Xv6 所创建的第一个用户态程序，从 <code>userinit()</code> 中可以看出，第一个用户态程序只能以靠手动的形式来创建，所以会要求它足够的<strong>简单</strong>。因此，<code>initcode</code> 更像一个<strong>楔子</strong>，用来引出真正的带有逻辑的用户程序。</p>
+<p>从代码中可以看出，<code>initcode</code> 就是利用 <code>exec</code> 这个系统调用来创建出一个更为复杂的可执行程序。它会将 <code>init</code> 这个程序加载到 <code>a0</code>，这个便是需要创建的程序的程序名，而后将参数 <code>argv</code> 加载到 <code>a1</code>。<code>exec</code> 这个系统调用的调用号是 7，所以需要将 7 加载到 <code>a7</code> 上。相关的操作完成后，就会调用 <code>ecall</code> 将控制权交回给操作系统。</p>
+<h3 id="触发-syscall"><a href="#触发-syscall" class="headerlink" title="触发 syscall"></a>触发 <code>syscall</code></h3><p>从上面可以看出，<code>userinit</code> 会创建一个简单的用户态程序，该程序会使用系统调用 <code>exec</code> 来创建一个真正有逻辑，较为复杂的用户态程序来替代自己。</p>
+<p>系统如何创建的第一个程序具体细节此时倒不必过多关注，需要关注的就是系统调用的具体逻辑，所以可以用 <code>b syscall</code> 将断点设置到系统调用的触发函数上。在 <code>userinit()</code> 内直接使用 <code>c</code> 让程序直接跑到断点的位置。</p>
+<p><code>syscall</code> 这个函数位于 <code>kernel/syscall.c</code> 内，内核可以通过 <code>p-&gt;trapframe-&gt;a7</code> 获取到系统调用号，这时候使用 <code>p num</code> 可以查看到这个系统调用号就是当时加载到 <code>a7</code> 的 7。程序运行到 <code>p-&gt;trapframe-&gt;a0 = syscalls[num]();</code> 时，直接使用 <code>s</code> 陷入到 <code>exec</code> 这个系统调用内。</p>
+<h3 id="进入-exec"><a href="#进入-exec" class="headerlink" title="进入 exec"></a>进入 <code>exec</code></h3><p><code>exec</code> 位于 <code>kernel/sysfile.c</code> 里，进入这个函数后，会把需要调用的程序路径放置到 <code>path</code>，启动参数放置到 <code>argv</code> 中。而后直接使用 <code>exec</code> 将 <code>path</code> 中的程序创建出来</p>
+<h3 id="创建完成"><a href="#创建完成" class="headerlink" title="创建完成"></a>创建完成</h3><p>通过上述的流程，可以正确地创建出真正意义上的第一个用户态程序，<code>init</code>。这个程序的源代码在 <code>user/init.c</code>。从代码里可以看出，这个程序唯一目的就是修改文件描述符，将 0 和 1 强制设定为标准输入输出。并且维持 <code>sh</code> 的运行。</p>
+<p>至此，整个系统就顺利地运行起来了。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：调试运行第一个Xv6程序</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2022-02-01 23:10:20</li>
+        <li>
+            本文链接：https://wzzzx.github.io/6-S081/run-first-xv6-program/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/6-S081/analyze-system-call/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">解析系统调用</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/6-S081/kernel-link-file/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">内核链接脚本解析</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">环境准备</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E8%BF%90%E8%A1%8C"><span class="nav-number"></span> <span class="nav-text">开始运行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%B7%E6%AD%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">起步操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5-main-%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">进入 main 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5-userinit-%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">进入 userinit() 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initcode-%E7%A8%8B%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">initcode 程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91-syscall"><span class="nav-number">5.</span> <span class="nav-text">触发 syscall</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5-exec"><span class="nav-number">6.</span> <span class="nav-text">进入 exec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%AE%8C%E6%88%90"><span class="nav-number">7.</span> <span class="nav-text">创建完成</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Windows, screen">
+    <meta name="description" content="Jacksing&#39;s Blog">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            系统息屏亮屏相关操作 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">系统息屏亮屏相关操作</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2024-04-15 12:39:09</span>
+        <span class="mobile">2024-04-15 12:39</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Windows/">Windows</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>我们当前的设备有个比较奇葩的地方，就是不会无法响应 Windows 的息屏亮屏操作。所以软件上的解决方案是，需要去监听 Windows 的相关息屏亮屏消息，然后通过硬件暴露出来的接口告知硬件，硬件再进行相应的变更。</p>
+<h3 id="设置息屏"><a href="#设置息屏" class="headerlink" title="设置息屏"></a>设置息屏</h3><p>设置息屏相对来说比较好处理，我们只需要广播一条息屏的消息出来，系统就会去响应。Windows 将这条消息放置在 <code>WM_SYSCOMMAND</code> 下，指定操作对象为 <code>SC_MONITORPOWER</code>，参数设置为 2 即可。具体代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在一般情况下，发生上面这条窗口消息都可以让屏幕息屏。但是，这是一个非常<strong>错误</strong>的做法！The Old New Thing 通过了一系列的博客阐述了一个概念，给桌面窗口发消息属于一种 hack 行为。这种行为可能会导致一些不可预知的问题，这条消息会被所有的 Top most 窗口处理，这意味着消息会被处理 N 次，虽然在大部分情况下这个广播消息不会有什么问题。但是类似的操作难免会在其他的地方给自己挖坑。需要记住一点的是，<strong>在 Windows 下，不要依赖不受控制的窗口去处理自己的事</strong>。</p>
+<p>正确的做法应该是创建一个自己的窗口，然后给这个窗口发送消息，由它来处理相关的事。</p>
+<h3 id="设置亮屏"><a href="#设置亮屏" class="headerlink" title="设置亮屏"></a>设置亮屏</h3><p>在设置息屏的消息参数中，1 表示设置为亮屏。但是实际验证后发现，调用这个参数会让屏幕亮起来，然后不到两秒钟的时间就又息屏了。并不清楚这个问题的原因是啥，可能是因为系统？笔者使用的系统版本为 Windows 10 家庭中文版, 版本号为 22H2。但是 Google 了一波后发现，大家貌似都存在这样的问题。</p>
+<p>针对这个问题，笔者考虑了一个比较取巧的方式来实现。既然移动鼠标能够让屏幕点亮，所以笔者的做法就是通过模拟鼠标移动来实现亮屏。并且还只能轻微移动，避免干扰用户的使用，具体代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TurnOnDisplay</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    INPUT inputs[<span class="number">2</span>] = &#123;&#125;;</span><br><span class="line">    ZeroMemory(inputs, <span class="keyword">sizeof</span>(inputs));</span><br><span class="line"></span><br><span class="line">    inputs[<span class="number">0</span>].type = INPUT_MOUSE;</span><br><span class="line">    inputs[<span class="number">0</span>].mi.dwFlags = MOUSEEVENTF_MOVE;</span><br><span class="line">    inputs[<span class="number">0</span>].mi.dx = <span class="number">0</span>;</span><br><span class="line">    inputs[<span class="number">0</span>].mi.dy = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    inputs[<span class="number">1</span>].type = INPUT_MOUSE;</span><br><span class="line">    inputs[<span class="number">1</span>].mi.dwFlags = MOUSEEVENTF_MOVE;</span><br><span class="line">    inputs[<span class="number">1</span>].mi.dx = <span class="number">0</span>;</span><br><span class="line">    inputs[<span class="number">1</span>].mi.dy = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    SendInput(<span class="number">2</span>, inputs, <span class="keyword">sizeof</span>(INPUT));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>mouse_event</code> 这个接口会简单一些，但是 Windows 已经标记为废弃了。所以更换成了 <code>SendInput</code> 这个接口。</p>
+<h3 id="获取当前屏幕状态"><a href="#获取当前屏幕状态" class="headerlink" title="获取当前屏幕状态"></a>获取当前屏幕状态</h3><p>设置相对来说还是一个比较简单的存在。但是获取当前屏幕状态就比较麻烦了。</p>
+<p>Windows 貌似对显示器有点偏见，以前在实现显示器相关的需求的时候，就发现这一块操作的接口要么基本没有，要么就是只提供了一些很简单的能力。如果要获取非显示器设备的电源设置，文档上可以找到 <a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getdevicepowerstate" >GetDevicePowerState<i class="fas fa-external-link-alt"></i></a> 这个接口。但是这个接口只能获取设备的电源状态，偏偏又不能获取显示器的电源状态。</p>
+<p>所以在这一时找不到方案去获取息屏状态的情况下，笔者实现的方案是去枚举显示设备，然后根据枚举出来的设备一个个查询他们的电源数据。根据微软的<a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/device-power-states" >定义<i class="fas fa-external-link-alt"></i></a>，如果设备电源状态为 D0，表示设备是完全开启的。否则都是一些低功耗或休眠的状态。具体到显示器上，屏幕点亮的时候，设备必然处于 D0 状态。所以我们可以通过这个状态来判断显示器是否亮屏。</p>
+<p>枚举设备，查询设备信息需要用到 <a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/setupapi/" >SetupAPI<i class="fas fa-external-link-alt"></i></a> 这一套东西。而设备主要是通过微软预定义的 <a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/install/system-defined-device-setup-classes-available-to-vendors" >GUID<i class="fas fa-external-link-alt"></i></a> 来标识的，对于显示器，其 GUID 为 <code>&#123;4d36e96e-e325-11ce-bfc1-08002be10318&#125;</code>。</p>
+<p>有思路之后，处理起来其实就很简单了。通过 <code>SetupDiGetClassDevsW</code> 这一接口可以获取当前的设备集，而后利用 <code>SetupDiEnumDeviceInfo</code> 来枚举设备，对于每个设备，使用 <code>SetupDiGetDeviceRegistryPropertyW</code> 来读取设备电源数据。代码可以简单参考如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">DEFINE_GUID</span>(GUID_DEVCLASS_MONITOR, <span class="number">0x4d36e96e</span>L, <span class="number">0xe325</span>, <span class="number">0x11ce</span>, <span class="number">0xbf</span>, <span class="number">0xc1</span>, <span class="number">0x08</span>, <span class="number">0x00</span>, <span class="number">0x2b</span>, <span class="number">0xe1</span>,</span><br><span class="line">            <span class="number">0x03</span>, <span class="number">0x18</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">GetMonitorState</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="通知"><a href="#通知" class="headerlink" title="通知"></a>通知</h3><p>通知也是一个大麻烦，在 <code>SetupAPI</code> 中，笔者暂时没有找到合适的接口来注入通知回调。这个确实有点奇怪，这种数据的变更通知看起来是一个强需求，不过可能以窗口消息的形式对外暴露？后续可以研究一下。</p>
+<p>在网上一通搜索之后，发现我们可以通过电源设置相关的接口来实现屏幕状态的变更通知。电源管理也是 Windows 整个体系内很大的课题，在我们的需求场景下，我们可以使用 <a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerpowersettingnotification" >RegisterPowerSettingNotification<i class="fas fa-external-link-alt"></i></a> 这个接口来注册通知。该接口可以提供很多不同类型的电源状态变更通知，这些类型通过预设 GUID 来区分。对于屏幕的亮屏息屏状态，我们可以使用 <code>GUID_CONSOLE_DISPLAY_STATE</code> 这个 GUID 即可。而后，屏幕的状态变更会通过窗口消息 <a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast" >WM_POWERBROADCAST<i class="fas fa-external-link-alt"></i></a> 来通知。</p>
+<p>这个接口有两个有意思的地方。首先，屏幕除了息屏和灭屏两种状态外，还额外提供了一个灰显的状态，有这个状态的加持，整个接口就更加完备了。其次，在注册通知成功的时候，窗口消息会立马收到一个事件，告知当前的状态。在这一能力加持下，我们甚至可以不需要通过枚举显示设备的方式来获取当前的显示器状态。</p>
+<blockquote>
+<p>参考链接</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.codeproject.com/Articles/1193099/Determining-the-Monitors-On-Off-sleep-Status" >Determining the Monitor’s On/Off (sleep) Status<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/power/power-setting-guids" >Power Setting GUIDs<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://stackoverflow.com/a/613300/20831244" >how can i detect the Monitor state<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://devblogs.microsoft.com/oldnewthing/20060613-05/?p=30893" >Fumbling around in the dark and stumbling across the wrong solution<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/device-power-states" >Device Power States<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast" >WM_POWERBROADCAST message<i class="fas fa-external-link-alt"></i></a></p>
+</blockquote>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：系统息屏亮屏相关操作</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2024-04-15 12:39:09</li>
+        <li>
+            本文链接：https://wzzzx.github.io/Windows/system_screen_operation/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/Windows/about-message-loop/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">关于消息循环的一点思考</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/Windows/handle_registry_monitor_message_lose/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">注册表监听避免消息丢失</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%81%AF%E5%B1%8F"><span class="nav-number">2.</span> <span class="nav-text">设置息屏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%BA%AE%E5%B1%8F"><span class="nav-number">3.</span> <span class="nav-text">设置亮屏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E5%B1%8F%E5%B9%95%E7%8A%B6%E6%80%81"><span class="nav-number">4.</span> <span class="nav-text">获取当前屏幕状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%9F%A5"><span class="nav-number">5.</span> <span class="nav-text">通知</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

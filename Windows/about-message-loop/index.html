@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-HK,zh-TW,en,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Windows, Message Loop, 消息循环">
+    <meta name="description" content="Jacksing&#39;s Blog">
+    <meta name="author" content="Jacksing">
+	<meta name="google-site-verification" content="_1pQ3xDBZ8vxFqIMe-h-vsRDCy5eQOXMYgdSoHHdSpM" />
+    <meta name="baidu-site-verification" content="code-lo2iVMbwIG" />
+    
+    <title>
+        
+            关于消息循环的一点思考 |
+        
+        Jacksing
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"wzzzx.github.io","root":"/","language":["zh-CN","zh-HK","zh-TW","en","default"],"path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg","favicon":"https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/rocket.svg","article_img_align":"center","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Jacksing's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Jacksing
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">关于消息循环的一点思考</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://cdn.jsdelivr.net/gh/Wzzzx/image@main/blog/avator.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Jacksing</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2024-04-24 13:17:16</span>
+        <span class="mobile">2024-04-24 13:17</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Windows/">Windows</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>最近仔细阅读了一下 Windows 的消息循环机制，发现可以基于这个机制实现一些有趣的功能。这篇文章就是对消息循环的一点思考。</p>
+<span id="more"></span>
+
+<h2 id="项目情况"><a href="#项目情况" class="headerlink" title="项目情况"></a>项目情况</h2><p>最近的这个项目，是一个后台的普通进程，该进程在开机启动之后，没有什么特殊原因的话，是不会退出的。所以过去的操作就是，在 <code>main</code> 函数里直接使用 Windows 消息循环的套路代码，一个死循环放在那里，其他的模块自己开自己的线程去搞事情。</p>
+<p>这样明显是一个非常不合理的操作，随便想想都能罗列出好些问题：</p>
+<ol>
+<li>平白无故浪费了一个线程，该线程开着却什么事情都不干。</li>
+<li>在项目里还有好些地方也需要使用窗口消息，之前就是需要的地方自己整个窗口整一套事件循环，这样就会有好多个消息循环，不好管理。</li>
+<li>虽然笔者的项目是不会退出的，但是现在这个做法真的也就一点退路都不留，完全没有任何办法去进行退出操作。</li>
+</ol>
+<h2 id="前期改进措施"><a href="#前期改进措施" class="headerlink" title="前期改进措施"></a>前期改进措施</h2><p>针对于第二点，笔者在项目的中期，额外迭代了一个通用的消息循环模块，这个模块内部就有着一个消息循环，其他模块只需要注册自己的消息处理函数就可以了。这样某种程度上就解决了第二点的问题。</p>
+<p>并且在后续项目开发的时候，产生了这样的一个需求。笔者在 A 线程里无法调用某个接口，否则会产生死锁，这时候需要丢给其他的线程去执行。这时候笔者想到可以用上这个通用的消息循环模块，所以笔者给这个消息循环模块加上了一个发送消息的接口，这样就可以在 A 线程里发送消息给消息循环线程，然后消息循环线程再去执行这个接口。</p>
+<h2 id="重构思路"><a href="#重构思路" class="headerlink" title="重构思路"></a>重构思路</h2><p>虽然有了一个通用消息循环模块，但项目主线程的操作始终还是一个心结，这看着就很丑。所以笔者决定重构一波。</p>
+<p>整体的一个思路就是，以 <code>Qt</code> 的消息循环为模板，重构一个消息循环模块出来。主线程可以是一个消息循环，但是需要让其他的线程也能使用到它，将它的能力开放出来。针对于此，这样一个消息循环模块肯定是需要有这么几个部分的：</p>
+<ol>
+<li>消息循环触发函数，通过这个函数可以让线程正式进入消息循环中</li>
+<li>广播发送和单播发送消息的接口，可以让其他线程发送消息给消息循环线程</li>
+<li>公共消息与私有消息的区分。公共消息可以用于广播，每个业务模块都可以根据广播消息进行相应的业务操作。私有消息是提供给不同的业务模块使用的，这样可以避免不同的业务模块之间的消息冲突</li>
+<li>注册和注销消息处理函数的接口，可以让其他线程注册自己的消息处理函数</li>
+<li>窗口句柄获取接口，通过这个接口可以获取到当前消息循环的窗口句柄</li>
+<li>消息循环退出接口，这样可以让消息循环线程退出消息循环</li>
+</ol>
+<h2 id="开始设计"><a href="#开始设计" class="headerlink" title="开始设计"></a>开始设计</h2><h3 id="回调函数设计"><a href="#回调函数设计" class="headerlink" title="回调函数设计"></a>回调函数设计</h3><p>Windows 的消息循环回调中，会通过一个 procedure 函数来处理消息。这个函数有四个参数，其中第一个是窗口句柄。</p>
+<p>Windows 的消息循环中，事件的处理是通过一个 Procedures 来实现的，也就是回调函数。这个回调函数有四个参数，其中第一个参数是窗口句柄，其他的具体可见<a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/winmsg/about-window-procedures#structure-of-a-window-procedure" >文档<i class="fas fa-external-link-alt"></i></a>。在我们的项目里，对于窗口句柄的需求看起来是没有的，所以设计消息回调函数的时候，只保留了后面的三个参数，函数返回值也是没有存在必要的。具体签名如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> MessageCallback = std::function&lt;<span class="built_in"><span class="keyword">void</span></span>(UINT msgId, UINT_PTR first, LONG_PTR second)&gt;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="消息定义"><a href="#消息定义" class="headerlink" title="消息定义"></a>消息定义</h3><p>通过这样的划分有几个好处。首先公共消息的定义肯定是放在一个全局可见的区域的，而在业务里，大部分的消息其实都应该是私有的，这样就不需要每申请一个消息就需要在全局定义一次，这样会显得很乱。其次，通过这样的划分，可以避免不同的业务模块之间的消息冲突。</p>
+<p>Windows 规定了用户自定义消息从 <code>WM_USER</code> 开始，到 <code>0x7FFF</code> 为止，所以我们可以在这个范围内定义我们的消息。这里我们的制定策略是，公共消息在头文件从 <code>WM_USER</code> 开始定义，私有消息则通过函数接口获取。</p>
+<p>这种设计可以极大的避免消息冲突问题，多人协作开发的时候，也不需要沟通之后再进行消息添加。并且对于具体的消息值，是一个完全没有必要去关心的东西。</p>
+<h3 id="窗口句柄"><a href="#窗口句柄" class="headerlink" title="窗口句柄"></a>窗口句柄</h3><p>Windows 下很多的接口都需要一个窗口的句柄来进行操作，所以我们的消息循环模块也需要提供一个接口来获取窗口句柄。这个接口的设计也是很简单的，只需要返回一个窗口句柄就可以了。</p>
+<h3 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h3><p>在对外暴露的整个消息循环模块里，<code>MsgLoop</code> 是唯一的一个类，这个类提供了几个 <code>static</code> 方法用来进行一些消息循环相关的操作，这些方法都保证是线程安全的。如下枚举：</p>
+<ol>
+<li><code>exec</code>：这个方法用于陷入消息循环，直到消息循环退出</li>
+<li><code>boardcast</code>：该方法用于广播消息，所有注册的消息处理函数都会收到这个消息</li>
+<li><code>handle</code>：该方法用于获取当前消息循环的窗口句柄</li>
+<li><code>quit</code>：该方法用于退出消息循环</li>
+</ol>
+<p>消息的处理则额外创建了一个类 <code>MsgOperator</code>，这个类放置于 <code>MsgLoop</code> 内。这个类用于注册和注销消息处理函数，发送事件，同时还需要提供一个接口用来生成私有消息。</p>
+<h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><h3 id="窗口创建"><a href="#窗口创建" class="headerlink" title="窗口创建"></a>窗口创建</h3><h4 id="创建时机"><a href="#创建时机" class="headerlink" title="创建时机"></a>创建时机</h4><p>在我们的模块设计中，进程调用了 <code>exec</code> 之后就陷入了消息循环当中了。照理来说，窗口以及相关资源的窗口应该在调用这个函数的时候才创建。但是这存在一个问题，如果在 <code>exec</code> 之前，就需要使用窗口句柄来初始化一些操作，又或者某个业务需要发生一些私有消息来进行初始化操作，那么这个时候窗口还没有创建出来，这就会导致一些问题。</p>
+<p>一般情况下，可以额外提供一个初始化函数，这个函数用于初始化窗口，然后在 <code>exec</code> 之前调用这个函数。但是这样的话，就会导致使用者需要额外的操作，又不太友好了。</p>
+<p>所以我们需要在 <code>exec</code> 之前就创建窗口，并且这个窗口的创建还应该足够的快。在 C++ 里，比较通用的解决方案就是全局 <code>static</code> 变量了。这种变量会在 <code>main</code> 函数之前初始化。所以窗口的创建我们可以选在这个变量中进行。</p>
+<p>不过这种方式带来的弊端就是，出现错误的时候，无法记录相关的日志。除非我们在窗口创建时就进行一些日志的初始化工作。但是这个时候并不想去介入过多额外的东西，所以笔者选择了无视错误信息。</p>
+<h4 id="消息队列创立"><a href="#消息队列创立" class="headerlink" title="消息队列创立"></a>消息队列创立</h4><p>在<strong>创建时机</strong>所提及的弊端除了需要快速创建窗口之外，还需要尽可能快的创建消息事件循环。这里笔者采用了一个比较简单且通用的方式，就是在窗口成功创建之后，直接调用 <code>PeekMessage</code> 函数来让系统迅速创建一个消息事件循环。注意参数应该设置为 <code>PM_NOREMOVE</code>，避免移除掉了需要被处理的消息。</p>
+<h4 id="类名"><a href="#类名" class="headerlink" title="类名"></a>类名</h4><p>Windows 要求创建窗口的时候，提供一个类名，为了避免跟其他的类名发生冲突。笔者项目里的类名额外增加了一个固定的 <code>uuid</code> 进去。使用固定的类名主要是考虑以后可能会涉及到一些类名的查询工作。</p>
+<h3 id="多线程安全"><a href="#多线程安全" class="headerlink" title="多线程安全"></a>多线程安全</h3><p>对于 <code>MsgLoop</code> 的几个静态方法，都保证是线程安全的。在这里方法中，唯一会导致线程不安全的变量就是窗口句柄了。为了提高性能，这里采用了读写锁的方式来进行保护。每次进入这些函数时，都会加一个读锁，判断窗口句柄是否存在。这里还有一个注意点，现阶段不存在的话，笔者就直接让函数返回了。后续会让进程直接崩溃。毕竟整个进程都依赖着这个窗口循环，窗口句柄不存在的话，这个进程就没有存在的必要了。</p>
+<p>在 <code>exec</code> 函数中，从消息循环中退出后，需要将窗口句柄设为 <code>nullptr</code>，这样可以避免其他业务还在使用这个窗口句柄。</p>
+<h3 id="控制消息"><a href="#控制消息" class="headerlink" title="控制消息"></a>控制消息</h3><p>对于这个消息循环组件，现在所暴露的公共属性只有两个，一个是消息循环创建消息，一个是退出消息。之所以提供这个，也是从 <code>QCoreApplication::aboutToQuit</code> 得到的启示。这两个消息可以让业务进行一些初始化和退出操作。并且保证这些操作都在消息循环内。</p>
+<h4 id="发送时机"><a href="#发送时机" class="headerlink" title="发送时机"></a>发送时机</h4><p>从上文提到的，调用 <code>exec</code> 的时候，可能已经晚了，很多操作都需要在之前就搞定好。所以得利用好 Windows 消息循环的特性，在创建完窗口的时候，我们会调用 <code>PeekMessage</code> 函数来让系统迅速创建消息事件循环，紧接着我们就可以发送一个消息循环创建消息。这时候发送的消息是不会被处理的，因为还没有地方去获取和处理它。等调用者调用 <code>exec</code> 的时候，就会进入消息循环，这个时候这条创建消息就会被立马处理，并且因为是创建完立马发送进来的，所以基本可以确保会在消息队列的最前面。</p>
+<p>退出的消息则是在 <code>quit</code> 函数中去调用，我们会在退出之前，发送一个退出消息，而后立马发送 <code>WM_QUIT</code> 消息，这样就基本上就保证了退出消息会是最后一个需要被处理的消息，并且还给了业务一个机会去处理这个退出消息。</p>
+<h2 id="非及时性"><a href="#非及时性" class="headerlink" title="非及时性"></a>非及时性</h2><p>既然决定使用了消息循环机制来处理事件，就必须要接收事件的发送和处理是分离且不及时的这一情况。主线程会依次收到不同的消息，处理结束后再进行下一个消息的处理。这里必然存在着消息处理延迟。不过可以考虑在 <code>exec</code> 中，强行提高一下线程的优先级，确保消息能够尽可能地及时处理。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>自从整了这么一个组件出来之后，笔者整个项目都围绕着这么一个类展开，跨线程通信 / 消息处理 / winapi 参数设置等操作都顺手多了，整个代码的架构也优雅多了。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：关于消息循环的一点思考</li>
+        <li>本文作者：Jacksing</li>
+        <li>创建时间：2024-04-24 13:17:16</li>
+        <li>
+            本文链接：https://wzzzx.github.io/Windows/about-message-loop/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/Windows/message-only-windows/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Message-only windows</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/Windows/system_screen_operation/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">系统息屏亮屏相关操作</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '325caafcb0c2ee41696b',
+                    clientSecret: 'bc07bb2d31ac296373ebe600898c35a7375ed324',
+                    repo: 'BlogComment',
+                    owner: 'Wzzzx',
+                    admin: ['Wzzzx'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN,zh-HK,zh-TW,en,default'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>
+                    2021
+                </span>
+                -
+                
+                    2024&nbsp;<i class="fas fa-rocket icon-animate"
+                            aria-hidden="true"></i>&nbsp;<a href="/">
+                            Jacksing
+                        </a>
+        </div>
+        
+            <script async data-pjax src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                    
+                        
+                            <span id="busuanzi_container_site_pv">
+                                总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                            </span>
+                            
+            </div>
+            
+                <div class="theme-info info-item">
+                    由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank"
+                                href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+                </div>
+                
+                        
+    </div>
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+            
+
+                <!-- go comment -->
+                
+    </ul>
+</div>
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center"
+            style="display:none">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center"
+            style="display:none">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center"
+            style="">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center"
+            style="">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center" href="/atom.xml" target="_blank">
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+            
+
+                
+                    <li class="tools-item tool-scroll-to-top flex-center"
+                        style="display:none">
+                        <i class="fas fa-arrow-up"></i>
+                    </li>
+                    
+
+                        <li class="tools-item tool-scroll-to-bottom flex-center"
+                            style="display:none">
+                            <i class="fas fa-arrow-down"></i>
+                        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%83%85%E5%86%B5"><span class="nav-number">1.</span> <span class="nav-text">项目情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%9C%9F%E6%94%B9%E8%BF%9B%E6%8E%AA%E6%96%BD"><span class="nav-number">2.</span> <span class="nav-text">前期改进措施</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%9E%84%E6%80%9D%E8%B7%AF"><span class="nav-number">3.</span> <span class="nav-text">重构思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">开始设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.1.</span> <span class="nav-text">回调函数设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E5%AE%9A%E4%B9%89"><span class="nav-number">4.2.</span> <span class="nav-text">消息定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%8F%A5%E6%9F%84"><span class="nav-number">4.3.</span> <span class="nav-text">窗口句柄</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86"><span class="nav-number">4.4.</span> <span class="nav-text">消息处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">5.</span> <span class="nav-text">实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%88%9B%E5%BB%BA"><span class="nav-number">5.1.</span> <span class="nav-text">窗口创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%97%B6%E6%9C%BA"><span class="nav-number">5.1.1.</span> <span class="nav-text">创建时机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%88%9B%E7%AB%8B"><span class="nav-number">5.1.2.</span> <span class="nav-text">消息队列创立</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB%E5%90%8D"><span class="nav-number">5.1.3.</span> <span class="nav-text">类名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">5.2.</span> <span class="nav-text">多线程安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E6%B6%88%E6%81%AF"><span class="nav-number">5.3.</span> <span class="nav-text">控制消息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E6%97%B6%E6%9C%BA"><span class="nav-number">5.3.1.</span> <span class="nav-text">发送时机</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E5%8F%8A%E6%97%B6%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">非及时性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/code-copy.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.3/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
